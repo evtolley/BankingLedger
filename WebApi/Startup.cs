@@ -1,4 +1,5 @@
-﻿using BusinessLogic.Transactions;
+﻿using BusinessLogic.Accounts;
+using BusinessLogic.Transactions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -29,9 +30,13 @@ namespace WebApi
             // Register the Swagger services
             services.AddSwaggerDocument();
 
+            // services
             services.AddScoped<ILedgerTransactionService, LedgerTransactionService>();
-            services.AddScoped<ILedgerTransactionRepository, LedgerTransactionRepository>();
+            services.AddScoped<IAccountService, AccountService>();
 
+            // repos
+            services.AddScoped<ILedgerTransactionRepository, LedgerTransactionRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,5 +1,4 @@
 ﻿using Core;
-using Persistence.Entities;
 using System.Collections.Generic;
 
 namespace BusinessLogic.Transactions
