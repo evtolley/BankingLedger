@@ -1,5 +1,4 @@
 ﻿using Core.Accounts;
-using Core.ExtensionMethods;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Persistence.RepositoryInterfaces;
@@ -23,7 +22,6 @@ namespace BusinessLogic.Accounts
         {
             this._accountRepository = accountRepository;
             _jwtConfiguration = jwtConfiguration;
-
         }
 
         public CreateAccountResultDto CreateAccount(CreateAccountDto accountInfo)
@@ -160,7 +158,7 @@ namespace BusinessLogic.Accounts
 
             var claims = new Claim[]
             {
-                new Claim(ClaimTypes.Name, userEmail)
+                new Claim("Email", userEmail)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Value.SecurityKey));
