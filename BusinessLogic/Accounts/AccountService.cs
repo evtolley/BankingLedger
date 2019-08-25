@@ -1,5 +1,4 @@
 ﻿using Core.Accounts;
-using Core.ExtensionMethods;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Persistence.RepositoryInterfaces;

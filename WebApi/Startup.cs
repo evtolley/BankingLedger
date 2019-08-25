@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.Generation.Processors.Security;
@@ -15,7 +14,6 @@ using Persistence;
 using Persistence.Repositories;
 using Persistence.RepositoryInterfaces;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using WebApi.Authorization;
 
