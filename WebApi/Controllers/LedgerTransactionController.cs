@@ -30,7 +30,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("withdrawal")]
-        public ActionResult Withdrawal([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
+        public ActionResult<LedgerTransactionResultDto> Withdrawal([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
         {
             if (!ModelState.IsValid)
             {
@@ -60,7 +60,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("deposit")]
-        public ActionResult Deposit([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
+        public ActionResult<LedgerTransactionResultDto> Deposit([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
         {
             if (!ModelState.IsValid)
             {
@@ -83,7 +83,7 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Route("balanceinquiry")]
-        public ActionResult BalanceInquiry()
+        public ActionResult<decimal> BalanceInquiry()
         {
             try
             {

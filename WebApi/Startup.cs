@@ -32,7 +32,9 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<BankingLedgerContext>(options => options.UseInMemoryDatabase(databaseName: "BankingLedgerDb"));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
+                                                                                .AllowAnyMethod()
+                                                                                 .AllowAnyHeader())); services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // register JWT settings for DI container
             services.Configure<JwtConfiguration>(Configuration.GetSection("JwtAuthentication"));
@@ -72,7 +74,7 @@ namespace WebApi
 
                 document.OperationProcessors.Add(
                     new AspNetCoreOperationSecurityScopeProcessor("JWT"));
-            });
+            });           
 
             // app services
             services.AddScoped<ILedgerTransactionService, LedgerTransactionService>();
@@ -97,6 +99,8 @@ namespace WebApi
             }
             app.UseAuthentication();
             app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
+
             app.UseMvc();
 
             // Register the Swagger generator and the Swagger UI middlewares
