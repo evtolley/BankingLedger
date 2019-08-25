@@ -1,0 +1,396 @@
+{
+  "x-generator": "NSwag v13.0.6.0 (NJsonSchema v10.0.23.0 (Newtonsoft.Json v11.0.0.0))",
+  "swagger": "2.0",
+  "info": {
+    "title": "My Title",
+    "version": "1.0.0"
+  },
+  "host": "localhost:44352",
+  "schemes": [
+    "https"
+  ],
+  "produces": [
+    "text/plain",
+    "application/json",
+    "text/json"
+  ],
+  "paths": {
+    "/api/Account/create": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_CreateAccount",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "name": "accountDto",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateAccountDto"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CreateAccountResultDto"
+            }
+          }
+        }
+      }
+    },
+    "/api/Account/login": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_Login",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "name": "loginInfo",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginAttemptDto"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/LoginResultDto"
+            }
+          }
+        }
+      }
+    },
+    "/api/LedgerTransaction/gettransactions": {
+      "get": {
+        "tags": [
+          "LedgerTransaction"
+        ],
+        "operationId": "LedgerTransaction_GetTransactions",
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LedgerTransactionDto"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/LedgerTransaction/withdrawal": {
+      "post": {
+        "tags": [
+          "LedgerTransaction"
+        ],
+        "operationId": "LedgerTransaction_Withdrawal",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "name": "ledgerTransactionDto",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/InputLedgerTransactionDto"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/LedgerTransactionResultDto"
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/LedgerTransaction/deposit": {
+      "post": {
+        "tags": [
+          "LedgerTransaction"
+        ],
+        "operationId": "LedgerTransaction_Deposit",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "name": "ledgerTransactionDto",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/InputLedgerTransactionDto"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/LedgerTransactionResultDto"
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/LedgerTransaction/balanceinquiry": {
+      "get": {
+        "tags": [
+          "LedgerTransaction"
+        ],
+        "operationId": "LedgerTransaction_BalanceInquiry",
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "type": "number",
+              "format": "decimal"
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "CreateAccountResultDto": {
+      "type": "object",
+      "required": [
+        "resultType"
+      ],
+      "properties": {
+        "resultType": {
+          "$ref": "#/definitions/AccountCreationResultTypeEnum"
+        },
+        "loginData": {
+          "$ref": "#/definitions/LoginResultDto"
+        }
+      }
+    },
+    "AccountCreationResultTypeEnum": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "Success",
+        "AlreadyExists",
+        "PasswordNotCompliant"
+      ],
+      "enum": [
+        0,
+        1,
+        2
+      ]
+    },
+    "LoginResultDto": {
+      "type": "object",
+      "required": [
+        "resultType"
+      ],
+      "properties": {
+        "resultType": {
+          "$ref": "#/definitions/LoginResultTypeEnum"
+        },
+        "email": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginResultTypeEnum": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "Success",
+        "Failure"
+      ],
+      "enum": [
+        0,
+        1
+      ]
+    },
+    "CreateAccountDto": {
+      "type": "object",
+      "required": [
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "LoginAttemptDto": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "LedgerTransactionDto": {
+      "type": "object",
+      "required": [
+        "accountId",
+        "transactionId",
+        "amount",
+        "dateTimeCreatedUTC",
+        "transactionType"
+      ],
+      "properties": {
+        "accountId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "transactionId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "amount": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "dateTimeCreatedUTC": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "transactionType": {
+          "$ref": "#/definitions/LedgerTransactionTypeEnum"
+        }
+      }
+    },
+    "LedgerTransactionTypeEnum": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "Withdrawal",
+        "Deposit"
+      ],
+      "enum": [
+        0,
+        1
+      ]
+    },
+    "LedgerTransactionResultDto": {
+      "type": "object",
+      "required": [
+        "resultType"
+      ],
+      "properties": {
+        "resultType": {
+          "$ref": "#/definitions/LedgerTransactionResultTypeEnum"
+        },
+        "transactionData": {
+          "$ref": "#/definitions/LedgerTransactionDto"
+        }
+      }
+    },
+    "LedgerTransactionResultTypeEnum": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "Success",
+        "InsufficientFunds"
+      ],
+      "enum": [
+        0,
+        1
+      ]
+    },
+    "InputLedgerTransactionDto": {
+      "type": "object",
+      "required": [
+        "amount"
+      ],
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "decimal",
+          "maximum": 1000000.0,
+          "minimum": 0.01
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "description": "Type into the textbox: Bearer {your JWT token}.",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "JWT": []
+    }
+  ]
+}

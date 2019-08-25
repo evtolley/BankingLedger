@@ -18,7 +18,7 @@ namespace WebApi.Controllers
         }
         [HttpPost]
         [Route("create")]
-        public ActionResult CreateAccount([FromBody] CreateAccountDto accountDto)
+        public ActionResult<CreateAccountResultDto> CreateAccount([FromBody] CreateAccountDto accountDto)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("login")]
-        public ActionResult Login([FromBody] LoginAttemptDto loginInfo)
+        public ActionResult<LoginResultDto> Login([FromBody] LoginAttemptDto loginInfo)
         {
             try
             {
