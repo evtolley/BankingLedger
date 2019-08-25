@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using BusinessLogic.Transactions;
 using Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class LedgerTransactionController : ControllerBase
     {
         private readonly ILedgerTransactionService _transactionService;

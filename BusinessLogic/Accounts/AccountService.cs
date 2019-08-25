@@ -1,18 +1,29 @@
 ﻿using Core.Accounts;
+using Core.ExtensionMethods;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Persistence.RepositoryInterfaces;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
+using WebApi.Authorization;
 
 namespace BusinessLogic.Accounts
 {
     public class AccountService : IAccountService
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IOptions<JwtConfiguration> _jwtConfiguration;
 
-        public AccountService(IAccountRepository accountRepository)
+        public AccountService(IAccountRepository accountRepository, 
+            IOptions<JwtConfiguration> jwtConfiguration)
         {
             this._accountRepository = accountRepository;
+            _jwtConfiguration = jwtConfiguration;
+
         }
 
         public CreateAccountResultDto CreateAccount(CreateAccountDto accountInfo)
@@ -70,9 +81,7 @@ namespace BusinessLogic.Accounts
                     {
                         Email = loginInfo.Email,
                         ResultType = LoginResultTypeEnum.Success,
-
-                        // TO DO: Generate a real token
-                        Token = "token123"
+                        Token = GenerateToken(loginInfo.Email)
                     };
                 }
             }
@@ -142,6 +151,30 @@ namespace BusinessLogic.Accounts
             }
 
             return false;
+        }
+
+        // code for generating a JWT token taken from one of my other personal projects
+        private string GenerateToken(string userEmail)
+        {
+            var utcNow = DateTime.UtcNow;
+
+            var claims = new Claim[]
+            {
+                new Claim(ClaimTypes.Name, userEmail)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Value.SecurityKey));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            // Create the JWT
+            var jwt = new JwtSecurityToken(
+                issuer: _jwtConfiguration.Value.ValidIssuer,
+                audience: _jwtConfiguration.Value.ValidAudience,
+                claims: claims,
+                notBefore: utcNow,
+                expires: utcNow.Add(TimeSpan.FromMinutes(120)),
+                signingCredentials: credentials);
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
     }
 }

@@ -1,14 +1,23 @@
 ﻿using BusinessLogic.Accounts;
 using BusinessLogic.Transactions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using NSwag;
+using NSwag.Generation.Processors.Security;
 using Persistence;
 using Persistence.Repositories;
 using Persistence.RepositoryInterfaces;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using WebApi.Authorization;
 
 namespace WebApi
 {
@@ -27,14 +36,51 @@ namespace WebApi
             services.AddDbContext<BankingLedgerContext>(options => options.UseInMemoryDatabase(databaseName: "BankingLedgerDb"));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            // Register the Swagger services
-            services.AddSwaggerDocument();
+            // register JWT settings for DI container
+            services.Configure<JwtConfiguration>(Configuration.GetSection("JwtAuthentication"));
 
-            // services
+            var jwtConfig = Configuration.GetSection("JwtAuthentication").Get<JwtConfiguration>();
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtConfig.SecurityKey)),
+                    ValidIssuer = jwtConfig.ValidIssuer,
+                    ValidAudience = jwtConfig.ValidAudience,
+                    ValidateIssuer = true,
+                    ValidateAudience = true
+                };
+            });
+
+
+            // Register the Swagger services
+            services.AddSwaggerDocument(document =>
+            {
+                document.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+                {
+                    Type = OpenApiSecuritySchemeType.ApiKey,
+                    Name = "Authorization",
+                    In = OpenApiSecurityApiKeyLocation.Header,
+                    Description = "Type into the textbox: Bearer {your JWT token}."
+                });
+
+                document.OperationProcessors.Add(
+                    new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+            });
+
+            // app services
             services.AddScoped<ILedgerTransactionService, LedgerTransactionService>();
             services.AddScoped<IAccountService, AccountService>();
 
-            // repos
+            // app repos
             services.AddScoped<ILedgerTransactionRepository, LedgerTransactionRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
         }
@@ -51,7 +97,7 @@ namespace WebApi
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
 
@@ -60,4 +106,7 @@ namespace WebApi
             app.UseSwaggerUi3();
         }
     }
+
 }
+
+
