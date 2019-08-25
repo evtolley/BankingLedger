@@ -22,7 +22,7 @@ namespace WebApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<LedgerTransactionDto>> GetAll()
         {
-            string currentUser = GetCurrentUserEmail();
+            int accountId = GetCurrentUserAccountId();
             return Ok(_transactionService.GetLedgerTransactions());
         }
 
@@ -41,10 +41,11 @@ namespace WebApi.Controllers
             }
         }
 
-        private string GetCurrentUserEmail()
+        // quick and dirty method for extracting the account id from the ClaimsIdentity
+        private int GetCurrentUserAccountId()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-            return identity.FindFirst("Email").Value;           
+            return Convert.ToInt32(identity.FindFirst("AccountId").Value);           
         }
     }
 }

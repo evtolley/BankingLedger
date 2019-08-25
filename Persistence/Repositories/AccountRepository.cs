@@ -32,6 +32,7 @@ namespace Persistence.Repositories
                 return new AccountDto()
                 {
                     Email = account.Email,
+                    AccountId = account.AccountId,
                     PasswordHash = account.PasswordHash
                 };
             }

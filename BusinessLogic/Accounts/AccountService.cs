@@ -79,7 +79,7 @@ namespace BusinessLogic.Accounts
                     {
                         Email = loginInfo.Email,
                         ResultType = LoginResultTypeEnum.Success,
-                        Token = GenerateToken(loginInfo.Email)
+                        Token = GenerateToken(loginInfo.Email, account.AccountId)
                     };
                 }
             }
@@ -152,13 +152,14 @@ namespace BusinessLogic.Accounts
         }
 
         // code for generating a JWT token taken from one of my other personal projects
-        private string GenerateToken(string userEmail)
+        private string GenerateToken(string userEmail, int accountId)
         {
             var utcNow = DateTime.UtcNow;
 
             var claims = new Claim[]
             {
-                new Claim("Email", userEmail)
+                new Claim("AccountId", accountId.ToString()),
+                new Claim("Email", userEmail),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Value.SecurityKey));
