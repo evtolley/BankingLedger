@@ -25,30 +25,15 @@ namespace BusinessLogic.LedgerTransactions
                 };
             }
 
-            transactionDto.Amount = Math.Round(transactionDto.Amount);
-            transactionDto.TransactionType = LedgerTransactionTypeEnum.Withdrawal;
-            transactionDto.DateTimeCreatedUTC = DateTime.UtcNow;
-
-            return new LedgerTransactionResultDto()
-            {
-                ResultType = LedgerTransactionResultTypeEnum.Success,
-                TransactionData = this._transactionRepo.AddLedgerTransaction(transactionDto)
-            };
+            return GenerateTransaction(transactionDto, LedgerTransactionTypeEnum.Withdrawal);
         }
 
         public LedgerTransactionResultDto MakeDeposit(LedgerTransactionDto transactionDto)
         {
-            transactionDto.Amount = Math.Round(transactionDto.Amount);
-            transactionDto.TransactionType = LedgerTransactionTypeEnum.Deposit;
-            transactionDto.DateTimeCreatedUTC = DateTime.UtcNow;
-
-            return new LedgerTransactionResultDto()
-            {
-                ResultType = LedgerTransactionResultTypeEnum.Success,
-                TransactionData = this._transactionRepo.AddLedgerTransaction(transactionDto)
-            };
+            return GenerateTransaction(transactionDto, LedgerTransactionTypeEnum.Deposit);
         }
 
+        // should have paging functionality. Skipping for brevity of this code sample
         public IEnumerable<LedgerTransactionDto> GetAccountTransactions(int accountId)
         {
             return this._transactionRepo.GetAccountTransactions(accountId);
@@ -57,6 +42,20 @@ namespace BusinessLogic.LedgerTransactions
         public decimal GetCurrentBalance(int accountId)
         {
             return this._transactionRepo.GetCurrentBalance(accountId);
+        }
+
+        private LedgerTransactionResultDto GenerateTransaction(LedgerTransactionDto transactionDto, LedgerTransactionTypeEnum transactionType)
+        {
+            // rounding entered amount to nearest cent
+            transactionDto.Amount = Math.Round(transactionDto.Amount, 2);
+            transactionDto.TransactionType = transactionType;
+            transactionDto.DateTimeCreatedUTC = DateTime.UtcNow;
+
+            return new LedgerTransactionResultDto()
+            {
+                ResultType = LedgerTransactionResultTypeEnum.Success,
+                TransactionData = this._transactionRepo.AddLedgerTransaction(transactionDto)
+            };
         }
     }
 }
