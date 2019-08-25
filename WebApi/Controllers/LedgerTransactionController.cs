@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using BusinessLogic.LedgerTransactions;
+using Core.ExtensionMethods;
 using Core.LedgerTransactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,16 +34,23 @@ namespace WebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Please provide a valid amount");
+                return BadRequest("Please provide a valid amount between $0.01 and $1,000,000");
             }
 
             try
             {
-                return Ok(_transactionService.MakeWithdrawal(new LedgerTransactionDto()
+                var result = _transactionService.MakeWithdrawal(new LedgerTransactionDto()
                 {
                     AccountId = GetCurrentUserAccountId(),
                     Amount = ledgerTransactionDto.Amount
-                }));
+                });
+
+                if(result.ResultType == LedgerTransactionResultTypeEnum.InsufficientFunds)
+                {
+                    return BadRequest(result.ResultType.GetDescription());
+                }
+
+                return Ok(result);
             }
             catch(Exception ex)
             {
@@ -56,7 +64,7 @@ namespace WebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Please provide a valid positive amount");
+                return BadRequest("Please provide a valid amount between $0.01 and $1,000,000");
             }
 
             try
