@@ -12,10 +12,11 @@ namespace Persistence.Entities
 
         [Key]
         public int AccountId { get; set; }
-        public string Email { get; set; }
 
-        //should be hashing!!!
-        public string Password { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
+        public int LoginAttempts { get; set; } = 0;
+        public string PasswordHash { get; set; }
 
         public ICollection<LedgerTransaction> Transactions { get; set; }
     }
