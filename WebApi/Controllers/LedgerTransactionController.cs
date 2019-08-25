@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using BusinessLogic.Transactions;
 using Core;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +22,7 @@ namespace WebApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<LedgerTransactionDto>> GetAll()
         {
+            string currentUser = GetCurrentUserEmail();
             return Ok(_transactionService.GetLedgerTransactions());
         }
 
@@ -37,6 +39,12 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.ToString());
             }
+        }
+
+        private string GetCurrentUserEmail()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            return identity.FindFirst("Email").Value;           
         }
     }
 }

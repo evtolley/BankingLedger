@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 
 namespace Core.ExtensionMethods
 {
