@@ -1,11 +1,12 @@
-﻿using Persistence.Entities;
+﻿using Core.LedgerTransactions;
 using System.Collections.Generic;
 
 namespace Persistence.RepositoryInterfaces
 {
     public interface ILedgerTransactionRepository
     {
-        IEnumerable<LedgerTransaction> GetLedgerTransactions();
-        void AddLedgerTransaction(LedgerTransaction transaction);
+        IEnumerable<LedgerTransactionDto> GetAccountTransactions(int accountId);
+        LedgerTransactionDto AddLedgerTransaction(LedgerTransactionDto transactionDto);
+        decimal GetCurrentBalance(int accountId);
     }
 }

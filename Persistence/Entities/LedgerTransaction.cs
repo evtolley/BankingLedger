@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.LedgerTransactions;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,7 @@ namespace Persistence.Entities
         public int TransactionId { get; set; }
         public decimal Amount { get; set; }
         public DateTime DateTimeCreatedUTC { get; set; }
+        public LedgerTransactionTypeEnum TransactionType { get; set; }
 
         [Required]
         [ForeignKey("Account")]

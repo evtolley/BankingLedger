@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using BusinessLogic.Transactions;
-using Core;
+using BusinessLogic.LedgerTransactions;
+using Core.ExtensionMethods;
+using Core.LedgerTransactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,22 +19,38 @@ namespace WebApi.Controllers
         {
             this._transactionService = transactionService;
         }
-        // GET api/values
+
         [HttpGet]
-        public ActionResult<IEnumerable<LedgerTransactionDto>> GetAll()
+        [Route("gettransactions")]
+        public ActionResult<IEnumerable<LedgerTransactionDto>> GetTransactions()
         {
-            string currentUser = GetCurrentUserEmail();
-            return Ok(_transactionService.GetLedgerTransactions());
+            int accountId = GetCurrentUserAccountId();
+            return Ok(_transactionService.GetAccountTransactions(GetCurrentUserAccountId()));
         }
 
-        // POST api/values
         [HttpPost]
-        public ActionResult Post([FromBody] LedgerTransactionDto ledgerTransactionDto)
+        [Route("withdrawal")]
+        public ActionResult Withdrawal([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Please provide a valid amount between $0.01 and $1,000,000");
+            }
+
             try
             {
-                _transactionService.AddLedgerTransaction(ledgerTransactionDto);
-                return Ok();
+                var result = _transactionService.MakeWithdrawal(new LedgerTransactionDto()
+                {
+                    AccountId = GetCurrentUserAccountId(),
+                    Amount = ledgerTransactionDto.Amount
+                });
+
+                if(result.ResultType == LedgerTransactionResultTypeEnum.InsufficientFunds)
+                {
+                    return BadRequest(result.ResultType.GetDescription());
+                }
+
+                return Ok(result);
             }
             catch(Exception ex)
             {
@@ -41,10 +58,48 @@ namespace WebApi.Controllers
             }
         }
 
-        private string GetCurrentUserEmail()
+        [HttpPost]
+        [Route("deposit")]
+        public ActionResult Deposit([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Please provide a valid amount between $0.01 and $1,000,000");
+            }
+
+            try
+            {
+                return Ok(_transactionService.MakeDeposit(new LedgerTransactionDto()
+                {
+                    AccountId = GetCurrentUserAccountId(),
+                    Amount = ledgerTransactionDto.Amount
+                }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
+        }
+
+        [HttpGet]
+        [Route("balanceinquiry")]
+        public ActionResult BalanceInquiry()
+        {
+            try
+            {
+                return Ok(_transactionService.GetCurrentBalance(GetCurrentUserAccountId()));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
+        }
+
+        // quick and dirty method for extracting the account id from the ClaimsIdentity
+        private int GetCurrentUserAccountId()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-            return identity.FindFirst("Email").Value;           
+            return Convert.ToInt32(identity.FindFirst("AccountId").Value);           
         }
     }
 }
