@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using BusinessLogic.Transactions;
-using Core;
+using BusinessLogic.LedgerTransactions;
+using Core.LedgerTransactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,24 +18,70 @@ namespace WebApi.Controllers
         {
             this._transactionService = transactionService;
         }
-        // GET api/values
+
         [HttpGet]
-        public ActionResult<IEnumerable<LedgerTransactionDto>> GetAll()
+        [Route("gettransactions")]
+        public ActionResult<IEnumerable<LedgerTransactionDto>> GetTransactions()
         {
             int accountId = GetCurrentUserAccountId();
-            return Ok(_transactionService.GetLedgerTransactions());
+            return Ok(_transactionService.GetAccountTransactions(GetCurrentUserAccountId()));
         }
 
-        // POST api/values
         [HttpPost]
-        public ActionResult Post([FromBody] LedgerTransactionDto ledgerTransactionDto)
+        [Route("withdrawal")]
+        public ActionResult Withdrawal([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Please provide a valid amount");
+            }
+
+            try
+            {
+                return Ok(_transactionService.MakeWithdrawal(new LedgerTransactionDto()
+                {
+                    AccountId = GetCurrentUserAccountId(),
+                    Amount = ledgerTransactionDto.Amount
+                }));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("deposit")]
+        public ActionResult Deposit([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Please provide a valid positive amount");
+            }
+
+            try
+            {
+                return Ok(_transactionService.MakeDeposit(new LedgerTransactionDto()
+                {
+                    AccountId = GetCurrentUserAccountId(),
+                    Amount = ledgerTransactionDto.Amount
+                }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
+        }
+
+        [HttpGet]
+        [Route("balanceinquiry")]
+        public ActionResult BalanceInquiry()
         {
             try
             {
-                _transactionService.AddLedgerTransaction(ledgerTransactionDto);
-                return Ok();
+                return Ok(_transactionService.GetCurrentBalance(GetCurrentUserAccountId()));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.ToString());
             }

@@ -15,7 +15,6 @@ namespace Persistence.Entities
 
         [EmailAddress]
         public string Email { get; set; }
-        public int LoginAttempts { get; set; } = 0;
         public string PasswordHash { get; set; }
 
         public ICollection<LedgerTransaction> Transactions { get; set; }

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using BusinessLogic.Accounts;
-using Core;
+﻿using BusinessLogic.Accounts;
 using Core.Accounts;
 using Core.ExtensionMethods;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +18,7 @@ namespace WebApi.Controllers
         }
         [HttpPost]
         [Route("create")]
-        public ActionResult<IEnumerable<LedgerTransactionDto>> CreateAccount([FromBody] CreateAccountDto accountDto)
+        public ActionResult CreateAccount([FromBody] CreateAccountDto accountDto)
         {
             try
             {
