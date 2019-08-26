@@ -5,6 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AccountService } from './swagger-proxy/services';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AuthGuard } from './auth-guard.service';
+import { AccountModule } from './account/account.module';
 
 @NgModule({
   declarations: [
@@ -13,11 +15,13 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    AccountModule
   ],
   providers: [
     HttpClient,
-    AccountService
+    AccountService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })
