@@ -5,17 +5,17 @@ import { CreateAccountComponent } from './create-account/create-account.componen
 
 const routes: Routes = [
   {
+    path: 'account/login',
+    component: LoginComponent,
+  },
+  {
+    path: 'account/create',
+    component: CreateAccountComponent,
+  },
+  {
     path: '',
     component: LoginComponent,
   },
-  {
-    path: 'login',
-    component: LoginComponent,
-  },
-  {
-    path: 'create',
-    component: CreateAccountComponent,
-  }
 ];
 
 @NgModule({
