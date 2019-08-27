@@ -47,6 +47,15 @@ namespace BusinessLogic.Accounts
                 };
             }
 
+            if (accountInfo.Password != accountInfo.ConfirmPassword)
+            {
+                return new CreateAccountResultDto()
+                {
+                    ResultType = AccountCreationResultTypeEnum.PasswordsDoNotMatch,
+                    LoginData = null
+                };
+            }
+
             // if the account doesn't exist, create it!
             _accountRepository.AddAccount(new AccountDto()
             {

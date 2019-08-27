@@ -9,6 +9,8 @@ namespace Core.Accounts
         [Description("This account already exists")]
         AlreadyExists,
         [Description("The entered password does not meet all requirements. The password Must be at least eight characters long and have at least one number and one letter.")]
-        PasswordNotCompliant
+        PasswordNotCompliant,
+        [Description("The passwords do not match")]
+        PasswordsDoNotMatch
     }
 }

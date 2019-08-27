@@ -5,7 +5,6 @@ import {
   RouterStateSnapshot,
   Router
 } from '@angular/router';
-import { map, catchError, flatMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 @Injectable()

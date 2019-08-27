@@ -1,13 +1,26 @@
   <h3>Login to your account</h3>
-  <div class="form">
+  <form class="form" (ngSubmit)="login()" #createAccountForm="ngForm" class="form">
+      <div class="form-group">
+          <div *ngIf="email.invalid && (email.dirty || email.touched)">
+            <span class="text-danger" *ngIf="email.errors.required">
+              Required
+            </span>
+            <span class="text-danger" *ngIf="email.errors.email">
+                Please enter a valid email
+            </span>
+          </div>
+        <input class="form-control" required placeholder="Email" type="email" email [(ngModel)]="model.email" name="email" id="email" #email="ngModel" />
+      </div>
+      <div class="form-group">
+          <div *ngIf="password.invalid && (password.dirty || password.touched)">
+              <span class="text-danger" *ngIf="password.errors.required">
+                Required
+              </span>         
+            </div>
+        <input class="form-control" required type="password" placeholder="Password"  [(ngModel)]="model.password" name="password" id="password" #password="ngModel"  />
+      </div>
     <div class="form-group">
-      <input class="form-control" placeholder="Email" />
+      <button class="btn btn-primary">Login</button>
     </div>
-    <div class="form-group">
-      <input class="form-control" type="password" placeholder="Password" />
-    </div>
-    <div class="form-group">
-      <button class="btn btn-secondary">Login</button>
-    </div>
-  </div>
+  </form>
   <a routerLink="/account/create"> Or, create a new one </a>

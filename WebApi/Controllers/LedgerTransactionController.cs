@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using BusinessLogic.LedgerTransactions;
+using Core;
 using Core.ExtensionMethods;
 using Core.LedgerTransactions;
 using Microsoft.AspNetCore.Authorization;
@@ -25,7 +26,15 @@ namespace WebApi.Controllers
         public ActionResult<IEnumerable<LedgerTransactionDto>> GetTransactions()
         {
             int accountId = GetCurrentUserAccountId();
-            return Ok(_transactionService.GetAccountTransactions(GetCurrentUserAccountId()));
+
+            try
+            {
+                return Ok(_transactionService.GetAccountTransactions(GetCurrentUserAccountId()));
+            }
+            catch
+            {
+                return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
+            }
         }
 
         [HttpPost]
@@ -34,7 +43,7 @@ namespace WebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Please provide a valid amount between $0.01 and $1,000,000");
+                return BadRequest(new ErrorResult("Please provide a valid amount between $0.01 and $1,000,000"));
             }
 
             try
@@ -54,7 +63,7 @@ namespace WebApi.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.ToString());
+                return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
             }
         }
 
@@ -64,7 +73,7 @@ namespace WebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Please provide a valid amount between $0.01 and $1,000,000");
+                return BadRequest(new ErrorResult("Please provide a valid amount between $0.01 and $1,000,000"));
             }
 
             try
@@ -77,7 +86,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.ToString());
+                return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
             }
         }
 
@@ -91,7 +100,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.ToString());
+                return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
             }
         }
 

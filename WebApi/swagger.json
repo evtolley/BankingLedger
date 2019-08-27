@@ -231,12 +231,14 @@
       "x-enumNames": [
         "Success",
         "AlreadyExists",
-        "PasswordNotCompliant"
+        "PasswordNotCompliant",
+        "PasswordsDoNotMatch"
       ],
       "enum": [
         0,
         1,
-        2
+        2,
+        3
       ]
     },
     "LoginResultDto": {
@@ -271,7 +273,8 @@
     "CreateAccountDto": {
       "type": "object",
       "required": [
-        "password"
+        "password",
+        "confirmPassword"
       ],
       "properties": {
         "email": {
@@ -279,6 +282,10 @@
           "format": "email"
         },
         "password": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confirmPassword": {
           "type": "string",
           "minLength": 1
         }

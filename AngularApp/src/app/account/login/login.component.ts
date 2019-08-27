@@ -1,17 +1,45 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { AccountService } from 'src/app/swagger-proxy/services';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { LoginAttemptDto } from 'src/app/swagger-proxy/models';
+import { takeWhile, map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
-  constructor() { }
+  constructor(private readonly accountService: AccountService,
+    private router: Router,
+    private toastr: ToastrService) { }
+    componentIsActive = true;
+    model: LoginAttemptDto = { email: null, password: null };
 
-  name = 'Hi from login componwnt!';
 
-  ngOnInit() {
+    login() {
+      this.accountService.AccountLogin(this.model).pipe(
+        takeWhile(() => this.componentIsActive),
+        map(res => {
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('email', res.email);
+          this.router.navigate(['/ledger']);
+        }),
+        catchError(res => {
+          this.toastr.error(res.error.title);
+          return of();
+        })
+      )
+      .subscribe();
+    }
 
-  }
+    ngOnInit() {
+    }
+
+    ngOnDestroy() {
+      this.componentIsActive = false;
+    }
 }

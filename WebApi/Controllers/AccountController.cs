@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.Accounts;
+using Core;
 using Core.Accounts;
 using Core.ExtensionMethods;
 using Microsoft.AspNetCore.Authorization;
@@ -24,21 +25,21 @@ namespace WebApi.Controllers
             {
                 if(!ModelState.IsValid)
                 {
-                    return BadRequest("Please enter a valid email and password.");
+                    return BadRequest(new ErrorResult("Please enter a valid email and password."));
                 }
 
                 var result = _accountService.CreateAccount(accountDto);
 
                 if(result.ResultType == AccountCreationResultTypeEnum.Success)
                 {
-                    return Ok(result.LoginData);
+                    return Ok(result);
                 }
 
-                return BadRequest(result.ResultType.GetDescription());
+                return BadRequest(new ErrorResult(result.ResultType.GetDescription()));
             }
             catch
             {
-                return BadRequest("Oops, something went wrong! Please try again");
+                return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
             }
         }
 
@@ -56,12 +57,12 @@ namespace WebApi.Controllers
                 }
                 else
                 {
-                    return BadRequest(result.ResultType.GetDescription());
+                    return BadRequest(new ErrorResult(result.ResultType.GetDescription()));
                 }  
             }
             catch
             {
-                return BadRequest("Oops, something went wrong! Please try again");
+                return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
             }
         }
     }
