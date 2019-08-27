@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         takeWhile(() => this.componentIsActive),
         map(res => {
           localStorage.setItem('token', res.token);
-          localStorage.setItem('email', res.email);
+          this.toastr.success(`Welcome ${res.email}!`);
           this.router.navigate(['/ledger']);
         }),
         catchError(res => {

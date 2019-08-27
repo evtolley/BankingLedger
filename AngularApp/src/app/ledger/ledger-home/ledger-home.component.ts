@@ -9,14 +9,9 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LedgerHomeComponent implements OnInit {
 
-  constructor(private readonly toastr: ToastrService) { }
+  constructor() { }
 
   ngOnInit() {
-    const userEmail = localStorage.getItem('email');
-
-    if (userEmail) {
-      this.toastr.success(`Welcome ${userEmail}!`)
-    }
   }
 
 }

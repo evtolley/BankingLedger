@@ -26,7 +26,7 @@ export class CreateAccountComponent implements OnInit, OnDestroy {
         takeWhile(() => this.componentIsActive),
         map(res => {
           localStorage.setItem('token', res.loginData.token);
-          localStorage.setItem('email', res.loginData.email);
+          this.toastr.success(`Welcome ${res.loginData.email}!`);
           this.router.navigate(['/ledger']);
         }),
         catchError(res => {
