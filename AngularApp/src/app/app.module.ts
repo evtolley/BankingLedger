@@ -6,10 +6,11 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AccountService } from './swagger-proxy/services';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthGuard } from './auth-guard.service';
 import { AccountModule } from './account/account.module';
 import { ToastrModule } from 'ngx-toastr';
+import { TokenInterceptor } from './token-interceptor.service';
 
 
 @NgModule({
@@ -27,7 +28,12 @@ import { ToastrModule } from 'ngx-toastr';
   providers: [
     HttpClient,
     AccountService,
-    AuthGuard
+    AuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

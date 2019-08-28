@@ -14,8 +14,8 @@ import { of } from 'rxjs';
 export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private readonly accountService: AccountService,
-    private router: Router,
-    private toastr: ToastrService) { }
+    private readonly router: Router,
+    private readonly toastr: ToastrService) { }
     componentIsActive = true;
     model: LoginAttemptDto = { email: null, password: null };
 
