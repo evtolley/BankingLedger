@@ -5,6 +5,7 @@ import { takeWhile, map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from 'src/app/auth.service';
 
 @Component({
   templateUrl: './create-account.component.html',
@@ -13,21 +14,19 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class CreateAccountComponent implements OnInit, OnDestroy {
 
-  constructor(private readonly accountService: AccountService,
-    private router: Router,
-    private toastr: ToastrService) { }
+  constructor(private readonly accountApiProxy: AccountService,
+    private readonly authService: AuthService,
+    private readonly toastr: ToastrService) { }
 
     componentIsActive = true;
     model: CreateAccountDto = { email: null, password: null, confirmPassword: null};
 
 
     createAccount() {
-      this.accountService.AccountCreateAccount(this.model).pipe(
+      this.accountApiProxy.AccountCreateAccount(this.model).pipe(
         takeWhile(() => this.componentIsActive),
         map(res => {
-          localStorage.setItem('token', res.loginData.token);
-          this.toastr.success(`Welcome ${res.loginData.email}!`);
-          this.router.navigate(['/ledger']);
+          this.authService.login(res.loginData.token, res.loginData.email);
         }),
         catchError(res => {
           this.toastr.error(res.error.title);

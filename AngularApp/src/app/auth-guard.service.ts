@@ -6,17 +6,18 @@ import {
   Router
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
   }
 
   /**
    * Only allows users with tokens to access requested route
    */
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-      if (localStorage.getItem('token')) {
+      if (this.authService.isUserLoggedIn()) {
           return of(true);
       }
 

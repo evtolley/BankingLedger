@@ -11,6 +11,7 @@ import { AuthGuard } from './auth-guard.service';
 import { AccountModule } from './account/account.module';
 import { ToastrModule } from 'ngx-toastr';
 import { TokenInterceptor } from './token-interceptor.service';
+import { AuthService } from './auth.service';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import { TokenInterceptor } from './token-interceptor.service';
     HttpClient,
     AccountService,
     AuthGuard,
+    AuthService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

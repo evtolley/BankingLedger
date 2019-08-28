@@ -3,6 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { LedgerService } from '../ledger.service';
 import { takeWhile, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
 
 @Component({
   templateUrl: './ledger-home.component.html',
@@ -12,16 +13,21 @@ import { of } from 'rxjs';
 export class LedgerHomeComponent implements OnInit, OnDestroy {
 
   constructor(private readonly ledgerService: LedgerService,
-    private readonly toastr: ToastrService) { }
+    private readonly toastr: ToastrService,
+    private readonly authService: AuthService) { }
 
   componentIsActive = true;
+
+  logout() {
+    this.authService.logout();
+  }
 
   ngOnInit() {
     this.ledgerService.loadTransactions()
     .pipe(
       takeWhile(() => this.componentIsActive),
       catchError(res => {
-        this.toastr.error(res.error.title);
+        this.toastr.error('Oops! something went wrong');
         return of();
       })
     )
