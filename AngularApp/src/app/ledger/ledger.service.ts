@@ -11,6 +11,7 @@ export class LedgerService {
 
     }
     transactions$ = new BehaviorSubject<LedgerTransactionDto[]>([]);
+    accountBalance$ = new BehaviorSubject<number>(0);
 
     loadTransactions (): Observable<void> {
         return this.transactionApiProxy.LedgerTransactionGetTransactions().pipe(
@@ -25,7 +26,16 @@ export class LedgerService {
             map(res => {
                 if (res.transactionData) {
                     this.transactions$.next([res.transactionData, ...this.transactions$.value]);
+                    this.accountBalance$.next(res.accountBalance);
                 }
+            })
+        );
+    }
+
+    getBalance(): Observable<void> {
+        return this.transactionApiProxy.LedgerTransactionBalanceInquiry().pipe(
+            map(res => {
+                this.accountBalance$.next(res);
             })
         );
     }

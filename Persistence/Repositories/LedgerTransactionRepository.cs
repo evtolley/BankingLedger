@@ -29,6 +29,16 @@ namespace Persistence.Repositories
             };
 
             account.Transactions.Add(transaction);
+
+            if(transactionDto.TransactionType == LedgerTransactionTypeEnum.Deposit)
+            {
+                account.Balance += transaction.Amount;
+            }
+            else
+            {
+                account.Balance -= transaction.Amount;
+            }
+
             _db.Entry(account).State = EntityState.Modified;
             _db.SaveChanges();
 
@@ -54,12 +64,14 @@ namespace Persistence.Repositories
 
         public decimal GetCurrentBalance(int accountId)
         {
-            return Math.Round(_db.Transactions
-                .Where(x => x.AccountId == accountId && x.TransactionType == LedgerTransactionTypeEnum.Deposit)
-                .Sum(x => x.Amount)
-                - _db.Transactions
-                .Where(x => x.AccountId == accountId && x.TransactionType == LedgerTransactionTypeEnum.Withdrawal)
-                .Sum(x => x.Amount + -1), 2);
+            var account = _db.Accounts.SingleOrDefault(x => x.AccountId == accountId);
+
+            if (account != null)
+            {
+                return account.Balance;
+            }
+
+            throw new Exception($@"No account found for the provided accountId: {accountId}");
         }
     }
 }

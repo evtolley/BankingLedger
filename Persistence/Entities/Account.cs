@@ -17,6 +17,8 @@ namespace Persistence.Entities
         public string Email { get; set; }
         public string PasswordHash { get; set; }
 
+        public decimal Balance { get; set; }
+
         public ICollection<LedgerTransaction> Transactions { get; set; }
     }
 }

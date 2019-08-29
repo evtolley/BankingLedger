@@ -4,4 +4,5 @@ import { LedgerTransactionDto } from './ledger-transaction-dto';
 export interface LedgerTransactionResultDto {
   resultType: LedgerTransactionResultTypeEnum;
   transactionData?: LedgerTransactionDto;
+  accountBalance: number;
 }

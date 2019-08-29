@@ -2,12 +2,17 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Current Balance: {{ ledgerService.accountBalance$ | async | currency }}</h5>
+                    </div>
+                </div>
                 <new-transaction-form></new-transaction-form>
+                <button class="btn btn-link float-right" (click)="logout()">Logout</button>
             </div>
         </div>
     </div>
 </div>
-<button class="btn btn-link float-right" (click)="logout()">Logout</button>
 <hr />
 <transaction-list [transactions]="ledgerService.transactions$ | async">
 </transaction-list>

@@ -8,5 +8,7 @@ namespace Core.LedgerTransactions
     {
         public LedgerTransactionResultTypeEnum ResultType { get; set; }
         public LedgerTransactionDto TransactionData { get; set; }
+
+        public decimal AccountBalance { get; set; }
     }
 }

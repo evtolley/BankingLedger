@@ -55,20 +55,20 @@ namespace BusinessLogic.LedgerTransactions
                 };
             }
 
-            var transaction = new LedgerTransactionDto()
+            var transactionResult = this._transactionRepo.AddLedgerTransaction(new LedgerTransactionDto()
             {
                 AccountId = accountId,
                 //rounding to nearest cent
                 Amount = Math.Round(transactionDto.Amount, 2),
                 TransactionType = transactionDto.TransactionType,
                 DateTimeCreatedUTC = DateTime.UtcNow
-            };
-
+            });
 
             return new LedgerTransactionResultDto()
             {
                 ResultType = LedgerTransactionResultTypeEnum.Success,
-                TransactionData = this._transactionRepo.AddLedgerTransaction(transaction)
+                TransactionData = transactionResult,
+                AccountBalance = GetCurrentBalance(accountId)
             };
         }
     }

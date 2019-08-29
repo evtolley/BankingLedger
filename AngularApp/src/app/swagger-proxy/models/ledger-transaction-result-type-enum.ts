@@ -1,2 +1,2 @@
 /* tslint:disable */
-export type LedgerTransactionResultTypeEnum = 0 | 1;
+export type LedgerTransactionResultTypeEnum = 0 | 1 | 2;

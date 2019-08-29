@@ -310,7 +310,8 @@
     "LedgerTransactionResultDto": {
       "type": "object",
       "required": [
-        "resultType"
+        "resultType",
+        "accountBalance"
       ],
       "properties": {
         "resultType": {
@@ -318,6 +319,10 @@
         },
         "transactionData": {
           "$ref": "#/definitions/LedgerTransactionDto"
+        },
+        "accountBalance": {
+          "type": "number",
+          "format": "decimal"
         }
       }
     },
@@ -326,11 +331,13 @@
       "description": "",
       "x-enumNames": [
         "Success",
-        "InsufficientFunds"
+        "InsufficientFunds",
+        "AmountOutOfRange"
       ],
       "enum": [
         0,
-        1
+        1,
+        2
       ]
     },
     "InputLedgerTransactionDto": {
@@ -342,9 +349,7 @@
       "properties": {
         "amount": {
           "type": "number",
-          "format": "decimal",
-          "maximum": 1000000.0,
-          "minimum": 0.01
+          "format": "decimal"
         },
         "transactionType": {
           "$ref": "#/definitions/LedgerTransactionTypeEnum"
