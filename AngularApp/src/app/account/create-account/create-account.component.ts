@@ -28,7 +28,11 @@ export class CreateAccountComponent implements OnInit, OnDestroy {
           this.authService.login(res.loginData.token, res.loginData.email);
         }),
         catchError(res => {
-          this.toastr.error('Oops, something went wrong. Please try again.');
+          if (res.error.title) {
+            this.toastr.error(res.error.title);
+          } else {
+            this.toastr.error('Oops, something went wrong. Please try again.');
+          }
           return of();
         })
       )

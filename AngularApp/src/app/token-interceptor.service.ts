@@ -7,6 +7,7 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+/* This service attaches the bearer token to all requests so it is authenticated on the server */
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
   constructor() {}
