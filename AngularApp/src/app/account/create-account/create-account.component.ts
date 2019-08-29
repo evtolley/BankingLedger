@@ -3,7 +3,6 @@ import { AccountService } from 'src/app/swagger-proxy/services';
 import { CreateAccountDto } from 'src/app/swagger-proxy/models';
 import { takeWhile, map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/auth.service';
 
@@ -29,7 +28,7 @@ export class CreateAccountComponent implements OnInit, OnDestroy {
           this.authService.login(res.loginData.token, res.loginData.email);
         }),
         catchError(res => {
-          this.toastr.error(res.error.title);
+          this.toastr.error('Oops, something went wrong. Please try again.');
           return of();
         })
       )

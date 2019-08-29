@@ -13,10 +13,10 @@ namespace BusinessLogic.LedgerTransactions
             this._transactionRepo = transactionRepo;
         }
 
-        public LedgerTransactionResultDto MakeWithdrawal(LedgerTransactionDto transactionDto)
+        public LedgerTransactionResultDto MakeWithdrawal(InputLedgerTransactionDto transactionDto, int accountId)
         {
             // check to make sure the user has enough in account for this transaction
-            if(transactionDto.Amount > _transactionRepo.GetCurrentBalance(transactionDto.AccountId))
+            if(transactionDto.Amount > _transactionRepo.GetCurrentBalance(accountId))
             {
                 return new LedgerTransactionResultDto()
                 {
@@ -25,12 +25,12 @@ namespace BusinessLogic.LedgerTransactions
                 };
             }
 
-            return GenerateTransaction(transactionDto, LedgerTransactionTypeEnum.Withdrawal);
+            return GenerateTransaction(transactionDto, accountId);
         }
 
-        public LedgerTransactionResultDto MakeDeposit(LedgerTransactionDto transactionDto)
+        public LedgerTransactionResultDto MakeDeposit(InputLedgerTransactionDto transactionDto, int accountId)
         {
-            return GenerateTransaction(transactionDto, LedgerTransactionTypeEnum.Deposit);
+            return GenerateTransaction(transactionDto, accountId);
         }
 
         // should have paging functionality. Skipping for brevity of this code sample
@@ -44,17 +44,31 @@ namespace BusinessLogic.LedgerTransactions
             return this._transactionRepo.GetCurrentBalance(accountId);
         }
 
-        private LedgerTransactionResultDto GenerateTransaction(LedgerTransactionDto transactionDto, LedgerTransactionTypeEnum transactionType)
+        private LedgerTransactionResultDto GenerateTransaction(InputLedgerTransactionDto transactionDto, int accountId)
         {
-            // rounding entered amount to nearest cent
-            transactionDto.Amount = Math.Round(transactionDto.Amount, 2);
-            transactionDto.TransactionType = transactionType;
-            transactionDto.DateTimeCreatedUTC = DateTime.UtcNow;
+            if(transactionDto.Amount < 0 || transactionDto.Amount > 1000000)
+            {
+                return new LedgerTransactionResultDto()
+                {
+                    ResultType = LedgerTransactionResultTypeEnum.AmountOutOfRange,
+                    TransactionData = null
+                };
+            }
+
+            var transaction = new LedgerTransactionDto()
+            {
+                AccountId = accountId,
+                //rounding to nearest cent
+                Amount = Math.Round(transactionDto.Amount, 2),
+                TransactionType = transactionDto.TransactionType,
+                DateTimeCreatedUTC = DateTime.UtcNow
+            };
+
 
             return new LedgerTransactionResultDto()
             {
                 ResultType = LedgerTransactionResultTypeEnum.Success,
-                TransactionData = this._transactionRepo.AddLedgerTransaction(transactionDto)
+                TransactionData = this._transactionRepo.AddLedgerTransaction(transaction)
             };
         }
     }

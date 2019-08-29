@@ -4,7 +4,9 @@ namespace Core.LedgerTransactions
 {
     public class InputLedgerTransactionDto
     {
-        [Range(0.01, 1000000)]
         public decimal Amount { get; set; }
+
+        [Required]
+        public LedgerTransactionTypeEnum TransactionType { get; set; }
     }
 }

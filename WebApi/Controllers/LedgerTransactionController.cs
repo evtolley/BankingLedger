@@ -38,53 +38,29 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("withdrawal")]
-        public ActionResult<LedgerTransactionResultDto> Withdrawal([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new ErrorResult("Please provide a valid amount between $0.01 and $1,000,000"));
-            }
-
+        [Route("create")]
+        public ActionResult<LedgerTransactionResultDto> Create([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
+        { 
             try
             {
-                var result = _transactionService.MakeWithdrawal(new LedgerTransactionDto()
-                {
-                    AccountId = GetCurrentUserAccountId(),
-                    Amount = ledgerTransactionDto.Amount
-                });
+                LedgerTransactionResultDto result;
 
-                if(result.ResultType == LedgerTransactionResultTypeEnum.InsufficientFunds)
+                if(ledgerTransactionDto.TransactionType == LedgerTransactionTypeEnum.Deposit)
                 {
-                    return BadRequest(result.ResultType.GetDescription());
+                    result = _transactionService.MakeDeposit(ledgerTransactionDto, GetCurrentUserAccountId());
+                }
+                else
+                {
+                    result = _transactionService.MakeWithdrawal(ledgerTransactionDto, GetCurrentUserAccountId());
                 }
 
+                if (result.ResultType != LedgerTransactionResultTypeEnum.Success)
+                {
+                    return BadRequest(new ErrorResult(result.ResultType.GetDescription()));
+                }
                 return Ok(result);
             }
-            catch(Exception ex)
-            {
-                return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
-            }
-        }
-
-        [HttpPost]
-        [Route("deposit")]
-        public ActionResult<LedgerTransactionResultDto> Deposit([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new ErrorResult("Please provide a valid amount between $0.01 and $1,000,000"));
-            }
-
-            try
-            {
-                return Ok(_transactionService.MakeDeposit(new LedgerTransactionDto()
-                {
-                    AccountId = GetCurrentUserAccountId(),
-                    Amount = ledgerTransactionDto.Amount
-                }));
-            }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
             }

@@ -7,6 +7,8 @@ namespace Core.LedgerTransactions
         Success,
 
         [Description("There are insufficient funds in this account for the requested transaction")]
-        InsufficientFunds
+        InsufficientFunds,
+        [Description("Only transactions between zero and one million dollars are supported")]
+        AmountOutOfRange
     }
 }

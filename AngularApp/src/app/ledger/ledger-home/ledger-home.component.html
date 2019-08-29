@@ -1,8 +1,13 @@
-<div style="background-color: white" class="sticky-top">
-  <h2>
-    Pin me to the top!
-    <button class="btn btn-link float-right" (click)="logout()">Logout</button>
-  </h2>
+<div class="sticky-top card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <new-transaction-form></new-transaction-form>
+            </div>
+        </div>
+    </div>
 </div>
+<button class="btn btn-link float-right" (click)="logout()">Logout</button>
+<hr />
 <transaction-list [transactions]="ledgerService.transactions$ | async">
 </transaction-list>

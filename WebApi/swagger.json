@@ -108,51 +108,12 @@
         ]
       }
     },
-    "/api/LedgerTransaction/withdrawal": {
+    "/api/LedgerTransaction/create": {
       "post": {
         "tags": [
           "LedgerTransaction"
         ],
-        "operationId": "LedgerTransaction_Withdrawal",
-        "consumes": [
-          "application/json-patch+json",
-          "application/json",
-          "text/json",
-          "application/*+json"
-        ],
-        "parameters": [
-          {
-            "name": "ledgerTransactionDto",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/InputLedgerTransactionDto"
-            },
-            "x-nullable": false
-          }
-        ],
-        "responses": {
-          "200": {
-            "x-nullable": false,
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/LedgerTransactionResultDto"
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
-    "/api/LedgerTransaction/deposit": {
-      "post": {
-        "tags": [
-          "LedgerTransaction"
-        ],
-        "operationId": "LedgerTransaction_Deposit",
+        "operationId": "LedgerTransaction_Create",
         "consumes": [
           "application/json-patch+json",
           "application/json",
@@ -375,7 +336,8 @@
     "InputLedgerTransactionDto": {
       "type": "object",
       "required": [
-        "amount"
+        "amount",
+        "transactionType"
       ],
       "properties": {
         "amount": {
@@ -383,6 +345,9 @@
           "format": "decimal",
           "maximum": 1000000.0,
           "minimum": 0.01
+        },
+        "transactionType": {
+          "$ref": "#/definitions/LedgerTransactionTypeEnum"
         }
       }
     }

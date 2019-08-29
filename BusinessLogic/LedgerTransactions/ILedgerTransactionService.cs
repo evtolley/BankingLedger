@@ -6,8 +6,8 @@ namespace BusinessLogic.LedgerTransactions
     public interface ILedgerTransactionService
     {
         IEnumerable<LedgerTransactionDto> GetAccountTransactions(int accountId);
-        LedgerTransactionResultDto MakeWithdrawal(LedgerTransactionDto transactionDto);
-        LedgerTransactionResultDto MakeDeposit(LedgerTransactionDto transactionDto);
+        LedgerTransactionResultDto MakeWithdrawal(InputLedgerTransactionDto transactionDto, int accountId);
+        LedgerTransactionResultDto MakeDeposit(InputLedgerTransactionDto transactionDto, int accountId);
         decimal GetCurrentBalance(int accountId);
     }
 }
