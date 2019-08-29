@@ -1,7 +1,7 @@
 <h4>Transactions</h4>
 <hr />
 <ul class="list-group" *ngIf="transactions.length === 0">
-  <li class="list-group-item">You havn't made any transactions yet. Add some!</li>
+  <li class="list-group-item">You haven't made any transactions yet. Make some!</li>
 </ul>
 <ul class="list-group" *ngIf="transactions.length > 0">
   <li class="list-group-item" [ngClass]="{' list-group-item-success': transaction.transactionType === 1, 
