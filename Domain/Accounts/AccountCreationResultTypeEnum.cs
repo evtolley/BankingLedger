@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Core.Accounts
+namespace Domain.Accounts
 {
     public enum AccountCreationResultTypeEnum
     {

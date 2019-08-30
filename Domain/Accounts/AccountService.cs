@@ -1,16 +1,14 @@
-﻿using Core.Accounts;
-using Microsoft.Extensions.Options;
+﻿using Domain.RepositoryInterfaces;
 using Microsoft.IdentityModel.Tokens;
-using Persistence.RepositoryInterfaces;
+using Microsoft.Extensions.Options;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using WebApi.Authorization;
 
-namespace BusinessLogic.Accounts
+namespace Domain.Accounts
 {
     public class AccountService : IAccountService
     {

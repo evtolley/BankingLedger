@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.LedgerTransactions
+namespace Domain.LedgerTransactions
 {
     public class LedgerTransactionDto
     {

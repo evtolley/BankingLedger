@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.LedgerTransactions
+﻿namespace Domain.LedgerTransactions
 {
     public class LedgerTransactionResultDto
     {

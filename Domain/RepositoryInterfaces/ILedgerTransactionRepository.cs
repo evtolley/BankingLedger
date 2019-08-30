@@ -1,7 +1,7 @@
-﻿using Core.LedgerTransactions;
+﻿using Domain.LedgerTransactions;
 using System.Collections.Generic;
 
-namespace Persistence.RepositoryInterfaces
+namespace Domain.RepositoryInterfaces
 {
     public interface ILedgerTransactionRepository
     {

@@ -1,5 +1,6 @@
-﻿using BusinessLogic.Accounts;
-using BusinessLogic.LedgerTransactions;
+﻿using Domain.Accounts;
+using Domain.LedgerTransactions;
+using Domain.RepositoryInterfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,10 +13,8 @@ using NSwag;
 using NSwag.Generation.Processors.Security;
 using Persistence;
 using Persistence.Repositories;
-using Persistence.RepositoryInterfaces;
 using System.Linq;
 using System.Text;
-using WebApi.Authorization;
 
 namespace WebApi
 {

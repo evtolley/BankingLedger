@@ -1,6 +1,6 @@
-﻿using Core.Accounts;
+﻿using Domain.Accounts;
 
-namespace Persistence.RepositoryInterfaces
+namespace Domain.RepositoryInterfaces
 {
     public interface IAccountRepository
     {

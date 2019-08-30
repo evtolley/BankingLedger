@@ -1,4 +1,4 @@
-﻿namespace Core.LedgerTransactions
+﻿namespace Domain.LedgerTransactions
 {
     public enum LedgerTransactionTypeEnum
     {

@@ -1,4 +1,4 @@
-﻿namespace Core.Accounts
+﻿namespace Domain.Accounts
 {
     public class AccountDto
     {

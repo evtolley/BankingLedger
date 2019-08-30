@@ -1,13 +1,13 @@
-﻿using Core.Accounts;
+﻿using Domain.Accounts;
+using Domain.RepositoryInterfaces;
 using Persistence.Entities;
-using Persistence.RepositoryInterfaces;
 using System.Linq;
 
 namespace Persistence.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
-        internal BankingLedgerContext _db;
+        private readonly BankingLedgerContext _db;
         public AccountRepository(BankingLedgerContext db)
         {
             this._db = db;

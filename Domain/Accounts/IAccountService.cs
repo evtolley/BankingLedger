@@ -1,6 +1,4 @@
-﻿using Core.Accounts;
-
-namespace BusinessLogic.Accounts
+﻿namespace Domain.Accounts
 {
     public interface IAccountService
     {

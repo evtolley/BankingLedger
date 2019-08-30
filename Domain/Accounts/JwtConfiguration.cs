@@ -1,4 +1,4 @@
-﻿namespace WebApi.Authorization
+﻿namespace Domain.Accounts
 {
     public class JwtConfiguration
     {

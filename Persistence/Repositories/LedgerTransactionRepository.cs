@@ -1,7 +1,7 @@
-﻿using Core.LedgerTransactions;
+﻿using Domain.LedgerTransactions;
+using Domain.RepositoryInterfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Entities;
-using Persistence.RepositoryInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace Persistence.Repositories
 {
     public class LedgerTransactionRepository : ILedgerTransactionRepository
     {
-        internal BankingLedgerContext _db;
+        private readonly BankingLedgerContext _db;
 
         public LedgerTransactionRepository(BankingLedgerContext db)
         {

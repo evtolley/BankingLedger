@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Accounts
+namespace Domain.Accounts
 {
     public class CreateAccountDto
     {

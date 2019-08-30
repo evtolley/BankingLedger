@@ -1,7 +1,6 @@
-﻿using BusinessLogic.Accounts;
-using Core;
-using Core.Accounts;
-using Core.ExtensionMethods;
+﻿using Domain.Accounts;
+using Domain;
+using Domain.ExtensionMethods;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

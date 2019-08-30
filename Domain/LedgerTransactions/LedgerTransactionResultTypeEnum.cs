@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Core.LedgerTransactions
+namespace Domain.LedgerTransactions
 {
     public enum LedgerTransactionResultTypeEnum
     {

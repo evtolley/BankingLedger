@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using BusinessLogic.LedgerTransactions;
-using Core;
-using Core.ExtensionMethods;
-using Core.LedgerTransactions;
+using Domain.LedgerTransactions;
+using Domain;
+using Domain.ExtensionMethods;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -60,7 +59,7 @@ namespace WebApi.Controllers
                 }
                 return Ok(result);
             }
-            catch (Exception)
+            catch
             {
                 return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
             }
@@ -74,7 +73,7 @@ namespace WebApi.Controllers
             {
                 return Ok(_transactionService.GetCurrentBalance(GetCurrentUserAccountId()));
             }
-            catch (Exception ex)
+            catch
             {
                 return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
             }

@@ -1,7 +1,6 @@
-﻿using Core.LedgerTransactions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace BusinessLogic.LedgerTransactions
+namespace Domain.LedgerTransactions
 {
     public interface ILedgerTransactionService
     {

@@ -1,9 +1,8 @@
-﻿using Core.LedgerTransactions;
-using Persistence.RepositoryInterfaces;
+﻿using Domain.RepositoryInterfaces;
 using System;
 using System.Collections.Generic;
 
-namespace BusinessLogic.LedgerTransactions
+namespace Domain.LedgerTransactions
 {
     public class LedgerTransactionService : ILedgerTransactionService
     {
