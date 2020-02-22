@@ -26,7 +26,7 @@ export class TransactionListComponent implements OnInit, OnDestroy {
   }
 
   loadTransactions() {
-    this.transactionSub$ = this.ledgerService.loadTransactions(8)
+    this.transactionSub$ = this.ledgerService.loadTransactions(15)
     .pipe(
       takeWhile(() => this.componentIsActive),
       catchError(res => {
