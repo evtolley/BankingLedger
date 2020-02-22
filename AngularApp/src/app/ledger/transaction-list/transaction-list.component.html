@@ -14,3 +14,6 @@
       {{ transaction.amount | currency }}</span>
   </li>
 </ul>
+<div *ngIf="!(ledgerService.allTransactionsLoaded$ | async)" class="text-center">
+  <button (click)="loadTransactions()" class="btn btn-link ">Load more</button>
+</div>

@@ -24,10 +24,20 @@ class LedgerTransactionService extends __BaseService {
   ) {
     super(config, http);
   }
-  LedgerTransactionGetTransactionsResponse(): __Observable<__StrictHttpResponse<Array<LedgerTransactionDto>>> {
+
+  /**
+   * @param params The `LedgerTransactionService.LedgerTransactionGetTransactionsParams` containing the following parameters:
+   *
+   * - `Skip`:
+   *
+   * - `PageSize`:
+   */
+  LedgerTransactionGetTransactionsResponse(params: LedgerTransactionService.LedgerTransactionGetTransactionsParams): __Observable<__StrictHttpResponse<Array<LedgerTransactionDto>>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
+    if (params.Skip != null) __params = __params.set('Skip', params.Skip.toString());
+    if (params.PageSize != null) __params = __params.set('PageSize', params.PageSize.toString());
     let req = new HttpRequest<any>(
       'GET',
       this.rootUrl + `/api/LedgerTransaction/gettransactions`,
@@ -44,8 +54,16 @@ class LedgerTransactionService extends __BaseService {
         return _r as __StrictHttpResponse<Array<LedgerTransactionDto>>;
       })
     );
-  }  LedgerTransactionGetTransactions(): __Observable<Array<LedgerTransactionDto>> {
-    return this.LedgerTransactionGetTransactionsResponse().pipe(
+  }
+  /**
+   * @param params The `LedgerTransactionService.LedgerTransactionGetTransactionsParams` containing the following parameters:
+   *
+   * - `Skip`:
+   *
+   * - `PageSize`:
+   */
+  LedgerTransactionGetTransactions(params: LedgerTransactionService.LedgerTransactionGetTransactionsParams): __Observable<Array<LedgerTransactionDto>> {
+    return this.LedgerTransactionGetTransactionsResponse(params).pipe(
       __map(_r => _r.body as Array<LedgerTransactionDto>)
     );
   }
@@ -111,6 +129,14 @@ class LedgerTransactionService extends __BaseService {
 }
 
 module LedgerTransactionService {
+
+  /**
+   * Parameters for LedgerTransactionGetTransactions
+   */
+  export interface LedgerTransactionGetTransactionsParams {
+    Skip?: number;
+    PageSize?: number;
+  }
 }
 
 export { LedgerTransactionService }

@@ -22,13 +22,13 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Route("gettransactions")]
-        public ActionResult<IEnumerable<LedgerTransactionDto>> GetTransactions()
+        public ActionResult<IEnumerable<LedgerTransactionDto>> GetTransactions([FromQuery]LedgerTransactionRequestDto dto)
         {
             int accountId = GetCurrentUserAccountId();
 
             try
             {
-                return Ok(_transactionService.GetAccountTransactions(GetCurrentUserAccountId()));
+                return Ok(_transactionService.GetAccountTransactions(GetCurrentUserAccountId(), dto.Skip, dto.PageSize));
             }
             catch
             {

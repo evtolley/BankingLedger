@@ -47,10 +47,12 @@ namespace Persistence.Repositories
             return transactionDto;
         }
 
-        public IEnumerable<LedgerTransactionDto> GetAccountTransactions(int accountId)
+        public IEnumerable<LedgerTransactionDto> GetAccountTransactions(int accountId, int skip, int pageSize)
         {
             return _db.Transactions.Where(x => x.AccountId == accountId)
                 .OrderByDescending(x => x.DateTimeCreatedUTC)
+                .Skip(skip)
+                .Take(pageSize)
                 .Select(x => new LedgerTransactionDto()
                 {
                     Amount = x.Amount,

@@ -32,8 +32,10 @@ namespace WebApi
         {
             services.AddDbContext<BankingLedgerContext>(options => options.UseInMemoryDatabase(databaseName: "BankingLedgerDb"));
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
-                                                                                .AllowAnyMethod()
-                                                                                 .AllowAnyHeader())); services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                                                                            .AllowAnyMethod()
+                                                                            .AllowAnyHeader())); 
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // register JWT settings for DI container
             services.Configure<JwtConfiguration>(Configuration.GetSection("JwtAuthentication"));
@@ -97,7 +99,6 @@ namespace WebApi
                 app.UseHsts();
             }
             app.UseAuthentication();
-            app.UseHttpsRedirection();
             app.UseCors("AllowAll");
 
             app.UseMvc();

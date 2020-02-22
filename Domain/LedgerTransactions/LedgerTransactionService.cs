@@ -32,10 +32,9 @@ namespace Domain.LedgerTransactions
             return GenerateTransaction(transactionDto, accountId);
         }
 
-        // should have paging functionality. Skipping for brevity of this code sample
-        public IEnumerable<LedgerTransactionDto> GetAccountTransactions(int accountId)
+        public IEnumerable<LedgerTransactionDto> GetAccountTransactions(int accountId, int skip, int pageSize)
         {
-            return this._transactionRepo.GetAccountTransactions(accountId);
+            return this._transactionRepo.GetAccountTransactions(accountId, skip, pageSize);
         }
 
         public decimal GetCurrentBalance(int accountId)

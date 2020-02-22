@@ -23,16 +23,6 @@ export class LedgerHomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.ledgerService.loadTransactions()
-    .pipe(
-      takeWhile(() => this.componentIsActive),
-      catchError(res => {
-        this.toastr.error('Oops! something went wrong');
-        return of();
-      })
-    )
-    .subscribe();
-
     this.ledgerService.getBalance()
     .pipe(
       takeWhile(() => this.componentIsActive),

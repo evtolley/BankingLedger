@@ -12,11 +12,15 @@ export class LedgerService {
     }
     transactions$ = new BehaviorSubject<LedgerTransactionDto[]>([]);
     accountBalance$ = new BehaviorSubject<number>(0);
+    allTransactionsLoaded$ = new BehaviorSubject<boolean>(false);
 
-    loadTransactions (): Observable<void> {
-        return this.transactionApiProxy.LedgerTransactionGetTransactions().pipe(
+    loadTransactions (pageSize: number): Observable<void> {
+        return this.transactionApiProxy.LedgerTransactionGetTransactions({ Skip: this.transactions$.value.length, PageSize: pageSize }).pipe(
             map(res => {
-                this.transactions$.next(res);
+                if(res.length < pageSize) {
+                    this.allTransactionsLoaded$.next(true);
+                }
+                this.transactions$.next([...this.transactions$.value, ...res]);
             })
         );
     }

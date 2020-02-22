@@ -5,9 +5,9 @@
     "title": "My Title",
     "version": "1.0.0"
   },
-  "host": "localhost:44352",
+  "host": "localhost:5000",
   "schemes": [
-    "https"
+    "http"
   ],
   "produces": [
     "text/plain",
@@ -89,6 +89,22 @@
           "LedgerTransaction"
         ],
         "operationId": "LedgerTransaction_GetTransactions",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "Skip",
+            "in": "query",
+            "format": "int32",
+            "x-nullable": false
+          },
+          {
+            "type": "integer",
+            "name": "PageSize",
+            "in": "query",
+            "format": "int32",
+            "x-nullable": false
+          }
+        ],
         "responses": {
           "200": {
             "x-nullable": false,
