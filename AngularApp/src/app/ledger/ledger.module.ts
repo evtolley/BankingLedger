@@ -6,9 +6,15 @@ import { LedgerHomeComponent } from './ledger-home/ledger-home.component';
 import { TransactionListComponent } from './transaction-list/transaction-list.component';
 import { NewTransactionFormComponent } from './new-transaction-form/new-transaction-form.component';
 import { FormsModule } from '@angular/forms';
+import { TransactionComponent } from './transaction/transaction.component';
 
 @NgModule({
-  declarations: [LedgerHomeComponent, TransactionListComponent, NewTransactionFormComponent],
+  declarations: [
+    LedgerHomeComponent, 
+    TransactionComponent, 
+    TransactionListComponent, 
+    NewTransactionFormComponent
+  ],
   imports: [
     CommonModule,
     LedgerRoutingModule,

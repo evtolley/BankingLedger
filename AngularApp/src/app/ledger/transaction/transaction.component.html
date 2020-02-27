@@ -1,0 +1,16 @@
+<li *ngIf="!editMode" class="list-group-item" [ngClass]="{' list-group-item-success': transaction.transactionType === 1, 
+'list-group-item-warning': transaction.transactionType === 0}">
+    <button class="btn btn-sm btn-outline-info edit-btn"(click)="toggleEditMode(transaction)">Edit</button>
+    <b class="transactionType" *ngIf="transaction.transactionType === 0">Withdrawal</b>
+    <b class="transactionType" *ngIf="transaction.transactionType === 1">Deposit</b>
+    <span class="d-none d-md-inline d-lg-inlin d-xl-inline"> on {{ transaction.dateTimeCreatedUTC | date: 'medium'}}</span>
+    <span class="float-right"><span *ngIf="transaction.transactionType === 0">-</span>
+    {{ transaction.amount | currency }}
+    </span>
+</li>
+
+<li *ngIf="editMode" class="list-group-item" [ngClass]="{' list-group-item-success': transaction.transactionType === 1, 
+'list-group-item-warning': transaction.transactionType === 0}">
+    <new-transaction-form></new-transaction-form>
+    <button class="btn btn-sm btn-outline-success"(click)="update()">Save</button>
+</li>
