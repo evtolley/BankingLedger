@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { LedgerTransactionDto } from 'src/app/swagger-proxy/models';
+import { LedgerTransactionDto, InputLedgerTransactionDto } from 'src/app/swagger-proxy/models';
 
 @Component({
   selector: 'transaction',
@@ -22,8 +22,8 @@ export class TransactionComponent implements OnInit {
     this.editMode = !this.editMode;
   }
 
-  update() {
-    console.log('Save clicked');
+  update(model: InputLedgerTransactionDto) {
+    console.log(model);
     this.toggleEditMode();
   }
 }

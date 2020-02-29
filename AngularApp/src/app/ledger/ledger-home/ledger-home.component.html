@@ -8,7 +8,7 @@
                     </div>
                 </div>
                 <p>New transaction</p>
-                <transaction-form></transaction-form>
+                <transaction-form (submitForm)="addTransaction($event)"></transaction-form>
                 <button class="btn btn-link float-right" (click)="logout()">Logout</button>
             </div>
         </div>

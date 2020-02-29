@@ -11,6 +11,12 @@
 
 <li *ngIf="editMode" class="list-group-item" [ngClass]="{' list-group-item-success': transaction.transactionType === 1, 
 'list-group-item-warning': transaction.transactionType === 0}">
-    <transaction-form></transaction-form>
-    <button class="btn btn-sm btn-outline-success"(click)="update()">Save</button>
+    Edit Transaction
+    <hr>
+    <transaction-form [model]="{ transactionType: transaction.transactionType, amount: transaction.amount }" (submitForm)="update($event)"></transaction-form>
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-link float-right" (click)="toggleEditMode()">Cancel</button>
+        </div>
+    </div> 
 </li>
