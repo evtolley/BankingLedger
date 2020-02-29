@@ -6,9 +6,9 @@ import { of } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'new-transaction-form',
-  templateUrl: './new-transaction-form.component.html',
-  styleUrls: ['./new-transaction-form.component.scss'],
+  selector: 'transaction-form',
+  templateUrl: './transaction-form.component.html',
+  styleUrls: ['./transaction-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NewTransactionFormComponent implements OnInit, OnDestroy {

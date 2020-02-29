@@ -11,6 +11,6 @@
 
 <li *ngIf="editMode" class="list-group-item" [ngClass]="{' list-group-item-success': transaction.transactionType === 1, 
 'list-group-item-warning': transaction.transactionType === 0}">
-    <new-transaction-form></new-transaction-form>
+    <transaction-form></transaction-form>
     <button class="btn btn-sm btn-outline-success"(click)="update()">Save</button>
 </li>
