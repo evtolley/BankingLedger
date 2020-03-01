@@ -17,7 +17,7 @@ namespace Persistence.Repositories
             this._db = db;
         }
 
-        public LedgerTransactionDto GetLedgerTransaction(int transactionId)
+        public LedgerTransactionDto GetLedgerTransaction(int? transactionId)
         {
             var transaction = this._db.Transactions.FirstOrDefault(x => x.TransactionId == transactionId);
 

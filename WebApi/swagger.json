@@ -163,6 +163,45 @@
         ]
       }
     },
+    "/api/LedgerTransaction/edit": {
+      "post": {
+        "tags": [
+          "LedgerTransaction"
+        ],
+        "operationId": "LedgerTransaction_Edit",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "name": "ledgerTransactionDto",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/InputLedgerTransactionDto"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/LedgerTransactionResultDto"
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/LedgerTransaction/balanceinquiry": {
       "get": {
         "tags": [
@@ -348,21 +387,28 @@
       "x-enumNames": [
         "Success",
         "InsufficientFunds",
-        "AmountOutOfRange"
+        "AmountOutOfRange",
+        "InvalidTransactionId"
       ],
       "enum": [
         0,
         1,
-        2
+        2,
+        3
       ]
     },
     "InputLedgerTransactionDto": {
       "type": "object",
       "required": [
+        "transactionId",
         "amount",
         "transactionType"
       ],
       "properties": {
+        "transactionId": {
+          "type": "integer",
+          "format": "int32"
+        },
         "amount": {
           "type": "number",
           "format": "decimal"

@@ -16,7 +16,7 @@ export class TransactionFormComponent implements OnInit {
   constructor(private readonly ledgerService: LedgerService, private readonly toastrService: ToastrService) { }
 
   @Input()
-  model: InputLedgerTransactionDto = { amount: 0, transactionType: 1 };
+  model: InputLedgerTransactionDto = { amount: 0, transactionType: 1, transactionId: null };
 
   @Output()
   submitForm: EventEmitter<InputLedgerTransactionDto> = new EventEmitter();

@@ -16,6 +16,7 @@ import { InputLedgerTransactionDto } from '../models/input-ledger-transaction-dt
 class LedgerTransactionService extends __BaseService {
   static readonly LedgerTransactionGetTransactionsPath = '/api/LedgerTransaction/gettransactions';
   static readonly LedgerTransactionCreatePath = '/api/LedgerTransaction/create';
+  static readonly LedgerTransactionEditPath = '/api/LedgerTransaction/edit';
   static readonly LedgerTransactionBalanceInquiryPath = '/api/LedgerTransaction/balanceinquiry';
 
   constructor(
@@ -98,6 +99,40 @@ class LedgerTransactionService extends __BaseService {
    */
   LedgerTransactionCreate(ledgerTransactionDto: InputLedgerTransactionDto): __Observable<LedgerTransactionResultDto> {
     return this.LedgerTransactionCreateResponse(ledgerTransactionDto).pipe(
+      __map(_r => _r.body as LedgerTransactionResultDto)
+    );
+  }
+
+  /**
+   * @param ledgerTransactionDto undefined
+   */
+  LedgerTransactionEditResponse(ledgerTransactionDto: InputLedgerTransactionDto): __Observable<__StrictHttpResponse<LedgerTransactionResultDto>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    __body = ledgerTransactionDto;
+    let req = new HttpRequest<any>(
+      'POST',
+      this.rootUrl + `/api/LedgerTransaction/edit`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<LedgerTransactionResultDto>;
+      })
+    );
+  }
+  /**
+   * @param ledgerTransactionDto undefined
+   */
+  LedgerTransactionEdit(ledgerTransactionDto: InputLedgerTransactionDto): __Observable<LedgerTransactionResultDto> {
+    return this.LedgerTransactionEditResponse(ledgerTransactionDto).pipe(
       __map(_r => _r.body as LedgerTransactionResultDto)
     );
   }

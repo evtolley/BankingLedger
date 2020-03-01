@@ -57,7 +57,8 @@ namespace Domain.LedgerTransactions
             var transactionResult = this._transactionRepo.EditLedgerTransaction(new LedgerTransactionDto()
             {
                 AccountId = accountId,
-                TransactionId = transactionDto.TransactionId,
+                //if we get here, we can be sure that TransactionId has a value
+                TransactionId = transactionDto.TransactionId.Value,
                 //rounding to nearest cent
                 Amount = Math.Round(transactionDto.Amount, 2),
                 TransactionType = transactionDto.TransactionType

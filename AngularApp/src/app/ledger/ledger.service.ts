@@ -36,6 +36,23 @@ export class LedgerService {
         );
     }
 
+    editTransaction(transaction: InputLedgerTransactionDto): Observable<void> {
+        return this.transactionApiProxy.LedgerTransactionEdit(transaction).pipe(
+            map(res => {
+                if (res.transactionData) {
+                    const index = this.transactions$.value.findIndex(item => item.transactionId === res.transactionData.transactionId);
+                    let transactions = this.transactions$.value;
+
+                    transactions[index].amount = res.transactionData.amount;
+                    transactions[index].transactionType = res.transactionData.transactionType;
+                    this.transactions$.next([...transactions]);
+
+                    this.accountBalance$.next(res.accountBalance);
+                }
+            })
+        );
+    }
+
     getBalance(): Observable<void> {
         return this.transactionApiProxy.LedgerTransactionBalanceInquiry().pipe(
             map(res => {
