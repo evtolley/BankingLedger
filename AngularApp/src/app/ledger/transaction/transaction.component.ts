@@ -34,7 +34,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
         this.toastr.success('Transaction updated');
       }),
       catchError(res => {
-        this.toastr.error('Oops! something went wrong');
+        this.toastr.error(res.error.title);
         return of();
       })
     )
