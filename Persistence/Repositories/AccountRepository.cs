@@ -1,7 +1,9 @@
 ﻿using Domain.Accounts;
 using Domain.RepositoryInterfaces;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Entities;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Persistence.Repositories
 {
@@ -13,19 +15,20 @@ namespace Persistence.Repositories
             this._db = db;
         }
 
-        public void AddAccount(AccountDto accountDto)
+        public async Task AddAccountAsync(AccountDto accountDto)
         {
-            this._db.Accounts.Add(new Account()
+            await this._db.Accounts.AddAsync(new Account()
             {
                 Email = accountDto.Email,
                 PasswordHash = accountDto.PasswordHash
             });
-            _db.SaveChanges();
+
+            await _db.SaveChangesAsync();
         }
 
-        public AccountDto GetAccountOrDefaultByEmail(string email)
+        public async Task<AccountDto> GetAccountOrDefaultByEmailAsync(string email)
         {
-            var account = _db.Accounts.FirstOrDefault(x => x.Email == email);
+            var account = await _db.Accounts.FirstOrDefaultAsync(x => x.Email == email);
 
             if(account != null)
             {

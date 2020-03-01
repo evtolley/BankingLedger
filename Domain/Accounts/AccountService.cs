@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Domain.Accounts
 {
@@ -22,9 +23,9 @@ namespace Domain.Accounts
             _jwtConfiguration = jwtConfiguration;
         }
 
-        public CreateAccountResultDto CreateAccount(CreateAccountDto accountInfo)
+        public async Task<CreateAccountResultDto> CreateAccountAsync(CreateAccountDto accountInfo)
         {
-            var account = _accountRepository.GetAccountOrDefaultByEmail(accountInfo.Email);
+            var account = await _accountRepository.GetAccountOrDefaultByEmailAsync(accountInfo.Email);
 
             // if the account already exists, a new one should not be added
             if(account != null)
@@ -55,7 +56,7 @@ namespace Domain.Accounts
             }
 
             // if the account doesn't exist, create it!
-            _accountRepository.AddAccount(new AccountDto()
+            await _accountRepository.AddAccountAsync(new AccountDto()
             {
                 Email = accountInfo.Email,
                 PasswordHash = HashPassword(accountInfo.Password)
@@ -65,7 +66,7 @@ namespace Domain.Accounts
             return new CreateAccountResultDto()
             {
                 ResultType = AccountCreationResultTypeEnum.Success,
-                LoginData = Login(new LoginAttemptDto()
+                LoginData = await LoginAsync(new LoginAttemptDto()
                 {
                     Email = accountInfo.Email,
                     Password = accountInfo.Password
@@ -73,9 +74,9 @@ namespace Domain.Accounts
             };
         }
 
-        public LoginResultDto Login(LoginAttemptDto loginInfo)
+        public async Task<LoginResultDto> LoginAsync(LoginAttemptDto loginInfo)
         {
-            var account = _accountRepository.GetAccountOrDefaultByEmail(loginInfo.Email);
+            var account = await _accountRepository.GetAccountOrDefaultByEmailAsync(loginInfo.Email);
 
             if(account != null)
             {
@@ -96,11 +97,6 @@ namespace Domain.Accounts
             {
                 ResultType = LoginResultTypeEnum.Failure
             };
-        }
-
-        public void Logout()
-        {
-            throw new NotImplementedException();
         }
 
         // quick password hashing algorithm for this code sample taken from https://stackoverflow.com/questions/4181198/how-to-hash-a-password/10402129#10402129

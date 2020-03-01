@@ -1,9 +1,10 @@
-﻿namespace Domain.Accounts
+﻿using System.Threading.Tasks;
+
+namespace Domain.Accounts
 {
     public interface IAccountService
     {
-        CreateAccountResultDto CreateAccount(CreateAccountDto accountInfo);
-        LoginResultDto Login(LoginAttemptDto loginInfo);
-        void Logout();
+        Task <CreateAccountResultDto> CreateAccountAsync(CreateAccountDto accountInfo);
+        Task<LoginResultDto> LoginAsync(LoginAttemptDto loginInfo);
     }
 }

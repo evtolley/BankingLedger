@@ -1,10 +1,11 @@
-﻿using Domain.Accounts;
+﻿using System.Threading.Tasks;
+using Domain.Accounts;
 
 namespace Domain.RepositoryInterfaces
 {
     public interface IAccountRepository
     {
-        void AddAccount(AccountDto loginAttemptDto);
-        AccountDto GetAccountOrDefaultByEmail(string email);
+        Task AddAccountAsync(AccountDto loginAttemptDto);
+        Task<AccountDto> GetAccountOrDefaultByEmailAsync(string email);
     }
 }

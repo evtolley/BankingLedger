@@ -3,6 +3,7 @@ using Domain;
 using Domain.ExtensionMethods;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
@@ -18,7 +19,7 @@ namespace WebApi.Controllers
         }
         [HttpPost]
         [Route("create")]
-        public ActionResult<CreateAccountResultDto> CreateAccount([FromBody] CreateAccountDto accountDto)
+        public async Task<ActionResult<CreateAccountResultDto>> CreateAccount([FromBody] CreateAccountDto accountDto)
         {
             try
             {
@@ -27,7 +28,7 @@ namespace WebApi.Controllers
                     return BadRequest(new ErrorResult("Please enter a valid email and password."));
                 }
 
-                var result = _accountService.CreateAccount(accountDto);
+                var result = await _accountService.CreateAccountAsync(accountDto);
 
                 if(result.ResultType == AccountCreationResultTypeEnum.Success)
                 {
@@ -44,11 +45,11 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("login")]
-        public ActionResult<LoginResultDto> Login([FromBody] LoginAttemptDto loginInfo)
+        public async Task<ActionResult<LoginResultDto>> Login([FromBody] LoginAttemptDto loginInfo)
         {
             try
             {
-                var result = _accountService.Login(loginInfo);
+                var result = await _accountService.LoginAsync(loginInfo);
 
                 if(result.ResultType == LoginResultTypeEnum.Success)
                 {
