@@ -15,7 +15,7 @@ namespace Domain.LedgerTransactions
         public LedgerTransactionResultDto MakeWithdrawal(InputLedgerTransactionDto transactionDto, int accountId)
         {
             // check to make sure the user has enough in account for this transaction
-            if(transactionDto.Amount > _transactionRepo.GetCurrentBalance(accountId))
+            if(!UserHasEnoughForNewWithdrawal(transactionDto.Amount, accountId))
             {
                 return new LedgerTransactionResultDto()
                 {
@@ -24,27 +24,67 @@ namespace Domain.LedgerTransactions
                 };
             }
 
-            return GenerateTransaction(transactionDto, accountId);
+            return GenerateNewTransaction(transactionDto, accountId);
         }
 
         public LedgerTransactionResultDto MakeDeposit(InputLedgerTransactionDto transactionDto, int accountId)
         {
-            return GenerateTransaction(transactionDto, accountId);
+            return GenerateNewTransaction(transactionDto, accountId);
+        }
+        public LedgerTransactionResultDto EditTransaction(InputLedgerTransactionDto transactionDto, int accountId)
+        {
+            var originalTransaction = _transactionRepo.GetLedgerTransaction(transactionDto.TransactionId);
+
+            if(originalTransaction == null)
+            {
+                return new LedgerTransactionResultDto()
+                {
+                    ResultType = LedgerTransactionResultTypeEnum.InvalidTransactionId,
+                    TransactionData = null
+                };
+            }
+
+            if(transactionDto.TransactionType == LedgerTransactionTypeEnum.Withdrawal 
+            && !UserHasEnoughForUpdateWithdrawal(transactionDto.Amount, originalTransaction, accountId))
+            {
+                return new LedgerTransactionResultDto()
+                {
+                    ResultType = LedgerTransactionResultTypeEnum.InsufficientFunds,
+                    TransactionData = null
+                };
+            }
+
+            var transactionResult = this._transactionRepo.EditLedgerTransaction(new LedgerTransactionDto()
+            {
+                AccountId = accountId,
+                TransactionId = transactionDto.TransactionId,
+                //rounding to nearest cent
+                Amount = Math.Round(transactionDto.Amount, 2),
+                TransactionType = transactionDto.TransactionType
+            });
+
+            return new LedgerTransactionResultDto()
+            {
+                ResultType = LedgerTransactionResultTypeEnum.Success,
+                TransactionData = transactionResult,
+                AccountBalance = GetCurrentBalance(accountId)
+            };
         }
 
         public IEnumerable<LedgerTransactionDto> GetAccountTransactions(int accountId, int skip, int pageSize)
         {
             return this._transactionRepo.GetAccountTransactions(accountId, skip, pageSize);
         }
+        
 
         public decimal GetCurrentBalance(int accountId)
         {
             return this._transactionRepo.GetCurrentBalance(accountId);
         }
 
-        private LedgerTransactionResultDto GenerateTransaction(InputLedgerTransactionDto transactionDto, int accountId)
+        private LedgerTransactionResultDto GenerateNewTransaction(InputLedgerTransactionDto transactionDto, int accountId)
         {
-            if(transactionDto.Amount < 0 || transactionDto.Amount > 1000000)
+            if(transactionDto.Amount < 0.01m || transactionDto.Amount > 1000000)
             {
                 return new LedgerTransactionResultDto()
                 {
@@ -68,6 +108,29 @@ namespace Domain.LedgerTransactions
                 TransactionData = transactionResult,
                 AccountBalance = GetCurrentBalance(accountId)
             };
+        }
+
+        private bool UserHasEnoughForNewWithdrawal(decimal amount, int accountId) 
+        {
+            return amount < _transactionRepo.GetCurrentBalance(accountId);
+        }
+
+        
+        private bool UserHasEnoughForUpdateWithdrawal(
+            decimal newAmount, 
+            LedgerTransactionDto originalTransaction,
+            int accountId) 
+        {
+            var currentBalance = _transactionRepo.GetCurrentBalance(accountId);
+
+            if(originalTransaction.TransactionType == LedgerTransactionTypeEnum.Deposit)
+            {
+                return (currentBalance - originalTransaction.Amount - newAmount) > 0;
+            }
+            else
+            {
+                return (currentBalance + originalTransaction.Amount - newAmount) > 0;
+            }
         }
     }
 }

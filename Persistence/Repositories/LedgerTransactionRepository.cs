@@ -17,6 +17,18 @@ namespace Persistence.Repositories
             this._db = db;
         }
 
+        public LedgerTransactionDto GetLedgerTransaction(int transactionId)
+        {
+            var transaction = this._db.Transactions.FirstOrDefault(x => x.TransactionId == transactionId);
+
+            if(transaction != null)
+            {
+                return transaction.GetLedgerTransactionDto();
+            }
+
+            return null;
+        }
+
         public LedgerTransactionDto AddLedgerTransaction(LedgerTransactionDto transactionDto)
         {
             var account = _db.Accounts.SingleOrDefault(x => x.AccountId == transactionDto.AccountId);
@@ -29,20 +41,33 @@ namespace Persistence.Repositories
             };
 
             account.Transactions.Add(transaction);
-
-            if(transactionDto.TransactionType == LedgerTransactionTypeEnum.Deposit)
-            {
-                account.Balance += transaction.Amount;
-            }
-            else
-            {
-                account.Balance -= transaction.Amount;
-            }
+            account.UpdateBalance(transaction);
 
             _db.Entry(account).State = EntityState.Modified;
             _db.SaveChanges();
 
             transactionDto.TransactionId = transaction.TransactionId;
+
+            return transactionDto;
+        }
+
+        public LedgerTransactionDto EditLedgerTransaction(LedgerTransactionDto transactionDto)
+        {
+            var transaction = _db.Transactions.FirstOrDefault(x => x.TransactionId == transactionDto.TransactionId);
+            var originalAmount = transaction.Amount;
+            var originalTransactionType = transaction.TransactionType;
+
+            var account = _db.Accounts.SingleOrDefault(x => x.AccountId == transactionDto.AccountId);
+
+            transaction.Amount = transactionDto.Amount;
+            transaction.TransactionType = transactionDto.TransactionType;
+            _db.Entry(transaction).State = EntityState.Modified;
+
+            account.RemoveTransactionAmountFromBalance(originalAmount, originalTransactionType);
+            account.UpdateBalance(transaction);
+
+            _db.Entry(account).State = EntityState.Modified;
+            _db.SaveChanges();
 
             return transactionDto;
         }
@@ -53,14 +78,7 @@ namespace Persistence.Repositories
                 .OrderByDescending(x => x.DateTimeCreatedUTC)
                 .Skip(skip)
                 .Take(pageSize)
-                .Select(x => new LedgerTransactionDto()
-                {
-                    Amount = x.Amount,
-                    DateTimeCreatedUTC = x.DateTimeCreatedUTC,
-                    AccountId = x.AccountId,
-                    TransactionId = x.TransactionId,
-                    TransactionType = x.TransactionType
-                })
+                .Select(x => x.GetLedgerTransactionDto())
                 .ToList();
         }
 

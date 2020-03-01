@@ -17,5 +17,17 @@ namespace Persistence.Entities
         [ForeignKey("Account")]
         public int AccountId { get; set; }
         public Account Account { get; set; }
+
+        public LedgerTransactionDto GetLedgerTransactionDto()
+        {
+            return new LedgerTransactionDto()
+            {
+                Amount = this.Amount,
+                DateTimeCreatedUTC = this.DateTimeCreatedUTC,
+                AccountId = this.AccountId,
+                TransactionId = this.TransactionId,
+                TransactionType = this.TransactionType
+            };
+        }
     }
 }

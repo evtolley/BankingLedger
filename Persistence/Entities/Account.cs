@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Domain.LedgerTransactions;
 
 namespace Persistence.Entities
 {
@@ -20,5 +21,29 @@ namespace Persistence.Entities
         public decimal Balance { get; set; }
 
         public ICollection<LedgerTransaction> Transactions { get; set; }
+
+        public void UpdateBalance(LedgerTransaction transaction)
+        {
+            if(transaction.TransactionType == LedgerTransactionTypeEnum.Deposit)
+            {
+                this.Balance += transaction.Amount;
+            }
+            else
+            {
+                this.Balance -= transaction.Amount;
+            }
+        }
+
+        public void RemoveTransactionAmountFromBalance(decimal amount, LedgerTransactionTypeEnum transactionType)
+        {
+            if(transactionType == LedgerTransactionTypeEnum.Deposit)
+            {
+                this.Balance -= amount;
+            }
+            else
+            {
+                this.Balance += amount;
+            }
+        }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using Domain.LedgerTransactions;
-using Domain;
 using Domain.ExtensionMethods;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +59,26 @@ namespace WebApi.Controllers
                 return Ok(result);
             }
             catch
+            {
+                return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
+            }
+        }
+
+        [HttpPost]
+        [Route("edit")]
+        public ActionResult<LedgerTransactionResultDto> Edit([FromBody]InputLedgerTransactionDto ledgerTransactionDto)
+        { 
+            try
+            {
+                LedgerTransactionResultDto result = _transactionService.EditTransaction(ledgerTransactionDto, GetCurrentUserAccountId());
+
+                if (result.ResultType != LedgerTransactionResultTypeEnum.Success)
+                {
+                    return BadRequest(new ErrorResult(result.ResultType.GetDescription()));
+                }
+                return Ok(result);
+            }
+            catch(Exception ex)
             {
                 return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
             }
