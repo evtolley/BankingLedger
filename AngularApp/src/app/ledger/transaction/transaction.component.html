@@ -1,9 +1,9 @@
-<li *ngIf="!editMode" class="list-group-item" [ngClass]="{' list-group-item-success': transaction.transactionType === 1, 
+<li *ngIf="viewMode === 'View'" class="list-group-item" [ngClass]="{' list-group-item-success': transaction.transactionType === 1, 
 'list-group-item-warning': transaction.transactionType === 0}">
-    <button class="btn btn-sm btn-outline-danger edit-btn"(click)="toggleDeleteMode(transaction)">
+    <button class="btn btn-sm btn-outline-danger list-btn"(click)="setViewMode('Delete')">
         <i class="fa fa-trash"></i>
     </button>
-    <button class="btn btn-sm btn-outline-secondary edit-btn"(click)="toggleEditMode(transaction)">
+    <button class="btn btn-sm btn-outline-secondary list-btn"(click)="setViewMode('Edit')">
         <i class="fa fa-pencil"></i>
     </button>
     <b class="transactionType" *ngIf="transaction.transactionType === 0">Withdrawal</b>
@@ -14,14 +14,28 @@
     </span>
 </li>
 
-<li *ngIf="editMode" class="list-group-item" [ngClass]="{' list-group-item-success': transaction.transactionType === 1, 
+<li *ngIf="viewMode === 'Edit'" class="list-group-item" [ngClass]="{' list-group-item-success': transaction.transactionType === 1, 
 'list-group-item-warning': transaction.transactionType === 0}">
     Edit Transaction
     <hr>
     <transaction-form [model]="{ transactionType: transaction.transactionType, amount: transaction.amount }" (submitForm)="update($event)"></transaction-form>
     <div class="row">
         <div class="col-md-12">
-            <button class="btn btn-link float-right" (click)="toggleEditMode()">Cancel</button>
+            <button class="btn btn-link float-right" (click)="setViewMode('View')">Cancel</button>
         </div>
     </div> 
+</li>
+
+<li *ngIf="viewMode === 'Delete'" class="list-group-item" [ngClass]="{' list-group-item-success': transaction.transactionType === 1, 
+'list-group-item-warning': transaction.transactionType === 0}">
+    <div class="row">
+        <div class=col-lg-12>
+            <button class="btn btn-sm btn-outline-danger float-right list-btn"(click)="delete()">
+                Confirm
+            </button>
+            <button class="btn btn-sm btn-outline-secondary float-right list-btn"(click)="setViewMode('View')">
+                Cancel
+            </button>
+        </div>
+    </div>
 </li>

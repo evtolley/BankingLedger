@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { LedgerService } from '../ledger.service';
 import { takeWhile, catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { TransactionViewMode } from './transactionviewmode.enum';
 
 @Component({
   selector: 'transaction',
@@ -14,14 +15,14 @@ export class TransactionComponent implements OnInit, OnDestroy {
 
   constructor(private readonly ledgerService: LedgerService, private readonly toastr: ToastrService) { }
 
-  editMode = false;
+  viewMode = TransactionViewMode.View;
   componentIsActive = true;
 
   @Input()
   transaction: LedgerTransactionDto;
 
-  toggleEditMode() {
-    this.editMode = !this.editMode;
+  setViewMode(mode: TransactionViewMode) {
+    this.viewMode = mode;
   }
 
   update(model: InputLedgerTransactionDto) {
@@ -39,7 +40,11 @@ export class TransactionComponent implements OnInit, OnDestroy {
       })
     )
     .subscribe()
-    this.toggleEditMode();
+    this.setViewMode(TransactionViewMode.View);
+  }
+
+  delete(model: InputLedgerTransactionDto) {
+    console.log('delete clicked');
   }
 
   ngOnInit() {
