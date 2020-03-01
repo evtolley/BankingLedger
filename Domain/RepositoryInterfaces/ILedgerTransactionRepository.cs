@@ -1,14 +1,15 @@
 ﻿using Domain.LedgerTransactions;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Domain.RepositoryInterfaces
 {
     public interface ILedgerTransactionRepository
     {
-        IEnumerable<LedgerTransactionDto> GetAccountTransactions(int accountId, int skip, int pageSize);
-        LedgerTransactionDto GetLedgerTransaction(int? transactionId);
-        LedgerTransactionDto AddLedgerTransaction(LedgerTransactionDto transactionDto);
-        LedgerTransactionDto EditLedgerTransaction(LedgerTransactionDto transactionDto);
-        decimal GetCurrentBalance(int accountId);
+        Task<IEnumerable<LedgerTransactionDto>> GetAccountTransactionsAsync(int accountId, int skip, int pageSize);
+        Task<LedgerTransactionDto> GetLedgerTransactionAsync(int? transactionId);
+        Task<LedgerTransactionDto> AddLedgerTransactionAsync(LedgerTransactionDto transactionDto);
+        Task<LedgerTransactionDto> EditLedgerTransactionAsync(LedgerTransactionDto transactionDto);
+        Task<decimal> GetCurrentBalanceAsync(int accountId);
     }
 }

@@ -5,6 +5,7 @@ using Persistence.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Persistence.Repositories
 {
@@ -17,9 +18,9 @@ namespace Persistence.Repositories
             this._db = db;
         }
 
-        public LedgerTransactionDto GetLedgerTransaction(int? transactionId)
+        public async Task<LedgerTransactionDto> GetLedgerTransactionAsync(int? transactionId)
         {
-            var transaction = this._db.Transactions.FirstOrDefault(x => x.TransactionId == transactionId);
+            var transaction = await this._db.Transactions.FirstOrDefaultAsync(x => x.TransactionId == transactionId);
 
             if(transaction != null)
             {
@@ -29,9 +30,9 @@ namespace Persistence.Repositories
             return null;
         }
 
-        public LedgerTransactionDto AddLedgerTransaction(LedgerTransactionDto transactionDto)
+        public async Task<LedgerTransactionDto> AddLedgerTransactionAsync(LedgerTransactionDto transactionDto)
         {
-            var account = _db.Accounts.SingleOrDefault(x => x.AccountId == transactionDto.AccountId);
+            var account = await _db.Accounts.SingleOrDefaultAsync(x => x.AccountId == transactionDto.AccountId);
 
             var transaction = new LedgerTransaction()
             {
@@ -44,20 +45,20 @@ namespace Persistence.Repositories
             account.UpdateBalance(transaction);
 
             _db.Entry(account).State = EntityState.Modified;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             transactionDto.TransactionId = transaction.TransactionId;
 
             return transactionDto;
         }
 
-        public LedgerTransactionDto EditLedgerTransaction(LedgerTransactionDto transactionDto)
+        public async Task<LedgerTransactionDto> EditLedgerTransactionAsync(LedgerTransactionDto transactionDto)
         {
-            var transaction = _db.Transactions.FirstOrDefault(x => x.TransactionId == transactionDto.TransactionId);
+            var transaction = await _db.Transactions.FirstOrDefaultAsync(x => x.TransactionId == transactionDto.TransactionId);
             var originalAmount = transaction.Amount;
             var originalTransactionType = transaction.TransactionType;
 
-            var account = _db.Accounts.SingleOrDefault(x => x.AccountId == transactionDto.AccountId);
+            var account = await _db.Accounts.SingleOrDefaultAsync(x => x.AccountId == transactionDto.AccountId);
 
             transaction.Amount = transactionDto.Amount;
             transaction.TransactionType = transactionDto.TransactionType;
@@ -67,24 +68,24 @@ namespace Persistence.Repositories
             account.UpdateBalance(transaction);
 
             _db.Entry(account).State = EntityState.Modified;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             return transactionDto;
         }
 
-        public IEnumerable<LedgerTransactionDto> GetAccountTransactions(int accountId, int skip, int pageSize)
+        public async Task<IEnumerable<LedgerTransactionDto>> GetAccountTransactionsAsync(int accountId, int skip, int pageSize)
         {
-            return _db.Transactions.Where(x => x.AccountId == accountId)
+            return await _db.Transactions.Where(x => x.AccountId == accountId)
                 .OrderByDescending(x => x.DateTimeCreatedUTC)
                 .Skip(skip)
                 .Take(pageSize)
                 .Select(x => x.GetLedgerTransactionDto())
-                .ToList();
+                .ToListAsync();
         }
 
-        public decimal GetCurrentBalance(int accountId)
+        public async Task<decimal> GetCurrentBalanceAsync(int accountId)
         {
-            var account = _db.Accounts.SingleOrDefault(x => x.AccountId == accountId);
+            var account = await _db.Accounts.SingleOrDefaultAsync(x => x.AccountId == accountId);
 
             if (account != null)
             {

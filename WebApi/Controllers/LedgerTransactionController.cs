@@ -5,6 +5,7 @@ using Domain.LedgerTransactions;
 using Domain.ExtensionMethods;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
@@ -21,13 +22,13 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Route("gettransactions")]
-        public ActionResult<IEnumerable<LedgerTransactionDto>> GetTransactions([FromQuery]LedgerTransactionRequestDto dto)
+        public async Task<ActionResult<IEnumerable<LedgerTransactionDto>>> GetTransactions([FromQuery]LedgerTransactionRequestDto dto)
         {
             int accountId = GetCurrentUserAccountId();
 
             try
             {
-                return Ok(_transactionService.GetAccountTransactions(GetCurrentUserAccountId(), dto.Skip, dto.PageSize));
+                return Ok(await _transactionService.GetAccountTransactionsAsync(GetCurrentUserAccountId(), dto.Skip, dto.PageSize));
             }
             catch
             {
@@ -37,7 +38,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("create")]
-        public ActionResult<LedgerTransactionResultDto> Create([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
+        public async Task<ActionResult<LedgerTransactionResultDto>> Create([FromBody] InputLedgerTransactionDto ledgerTransactionDto)
         { 
             try
             {
@@ -45,11 +46,11 @@ namespace WebApi.Controllers
 
                 if(ledgerTransactionDto.TransactionType == LedgerTransactionTypeEnum.Deposit)
                 {
-                    result = _transactionService.MakeDeposit(ledgerTransactionDto, GetCurrentUserAccountId());
+                    result = await _transactionService.MakeDepositAsync(ledgerTransactionDto, GetCurrentUserAccountId());
                 }
                 else
                 {
-                    result = _transactionService.MakeWithdrawal(ledgerTransactionDto, GetCurrentUserAccountId());
+                    result = await _transactionService.MakeWithdrawalAsync(ledgerTransactionDto, GetCurrentUserAccountId());
                 }
 
                 if (result.ResultType != LedgerTransactionResultTypeEnum.Success)
@@ -66,11 +67,11 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("edit")]
-        public ActionResult<LedgerTransactionResultDto> Edit([FromBody]InputLedgerTransactionDto ledgerTransactionDto)
+        public async Task<ActionResult<LedgerTransactionResultDto>> Edit([FromBody]InputLedgerTransactionDto ledgerTransactionDto)
         { 
             try
             {
-                LedgerTransactionResultDto result = _transactionService.EditTransaction(ledgerTransactionDto, GetCurrentUserAccountId());
+                LedgerTransactionResultDto result = await _transactionService.EditTransactionAsync(ledgerTransactionDto, GetCurrentUserAccountId());
 
                 if (result.ResultType != LedgerTransactionResultTypeEnum.Success)
                 {
@@ -78,7 +79,7 @@ namespace WebApi.Controllers
                 }
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch
             {
                 return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
             }
@@ -86,11 +87,11 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Route("balanceinquiry")]
-        public ActionResult<decimal> BalanceInquiry()
+        public async Task<ActionResult<decimal>> BalanceInquiry()
         {
             try
             {
-                return Ok(_transactionService.GetCurrentBalance(GetCurrentUserAccountId()));
+                return Ok(await _transactionService.GetCurrentBalanceAsync(GetCurrentUserAccountId()));
             }
             catch
             {

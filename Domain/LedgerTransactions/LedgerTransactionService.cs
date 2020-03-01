@@ -1,6 +1,7 @@
 ﻿using Domain.RepositoryInterfaces;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Domain.LedgerTransactions
 {
@@ -12,10 +13,10 @@ namespace Domain.LedgerTransactions
             this._transactionRepo = transactionRepo;
         }
 
-        public LedgerTransactionResultDto MakeWithdrawal(InputLedgerTransactionDto transactionDto, int accountId)
+        public async Task<LedgerTransactionResultDto> MakeWithdrawalAsync(InputLedgerTransactionDto transactionDto, int accountId)
         {
             // check to make sure the user has enough in account for this transaction
-            if(!UserHasEnoughForNewWithdrawal(transactionDto.Amount, accountId))
+            if(!await UserHasEnoughForNewWithdrawalAsync(transactionDto.Amount, accountId))
             {
                 return new LedgerTransactionResultDto()
                 {
@@ -24,16 +25,16 @@ namespace Domain.LedgerTransactions
                 };
             }
 
-            return GenerateNewTransaction(transactionDto, accountId);
+            return await GenerateNewTransactionAsync(transactionDto, accountId);
         }
 
-        public LedgerTransactionResultDto MakeDeposit(InputLedgerTransactionDto transactionDto, int accountId)
+        public async Task<LedgerTransactionResultDto> MakeDepositAsync(InputLedgerTransactionDto transactionDto, int accountId)
         {
-            return GenerateNewTransaction(transactionDto, accountId);
+            return await GenerateNewTransactionAsync(transactionDto, accountId);
         }
-        public LedgerTransactionResultDto EditTransaction(InputLedgerTransactionDto transactionDto, int accountId)
+        public async Task<LedgerTransactionResultDto> EditTransactionAsync(InputLedgerTransactionDto transactionDto, int accountId)
         {
-            var originalTransaction = _transactionRepo.GetLedgerTransaction(transactionDto.TransactionId);
+            var originalTransaction = await _transactionRepo.GetLedgerTransactionAsync(transactionDto.TransactionId);
 
             if(originalTransaction == null)
             {
@@ -45,7 +46,7 @@ namespace Domain.LedgerTransactions
             }
 
             if(transactionDto.TransactionType == LedgerTransactionTypeEnum.Withdrawal 
-            && !UserHasEnoughForUpdateWithdrawal(transactionDto.Amount, originalTransaction, accountId))
+            && !await UserHasEnoughForUpdateWithdrawalAsync(transactionDto.Amount, originalTransaction, accountId))
             {
                 return new LedgerTransactionResultDto()
                 {
@@ -54,7 +55,7 @@ namespace Domain.LedgerTransactions
                 };
             }
 
-            var transactionResult = this._transactionRepo.EditLedgerTransaction(new LedgerTransactionDto()
+            var transactionResult = await this._transactionRepo.EditLedgerTransactionAsync(new LedgerTransactionDto()
             {
                 AccountId = accountId,
                 //if we get here, we can be sure that TransactionId has a value
@@ -68,22 +69,21 @@ namespace Domain.LedgerTransactions
             {
                 ResultType = LedgerTransactionResultTypeEnum.Success,
                 TransactionData = transactionResult,
-                AccountBalance = GetCurrentBalance(accountId)
+                AccountBalance = await GetCurrentBalanceAsync(accountId)
             };
         }
 
-        public IEnumerable<LedgerTransactionDto> GetAccountTransactions(int accountId, int skip, int pageSize)
+        public async Task<IEnumerable<LedgerTransactionDto>> GetAccountTransactionsAsync(int accountId, int skip, int pageSize)
         {
-            return this._transactionRepo.GetAccountTransactions(accountId, skip, pageSize);
+            return await this._transactionRepo.GetAccountTransactionsAsync(accountId, skip, pageSize);
         }
         
-
-        public decimal GetCurrentBalance(int accountId)
+        public async Task<decimal> GetCurrentBalanceAsync(int accountId)
         {
-            return this._transactionRepo.GetCurrentBalance(accountId);
+            return await this._transactionRepo.GetCurrentBalanceAsync(accountId);
         }
 
-        private LedgerTransactionResultDto GenerateNewTransaction(InputLedgerTransactionDto transactionDto, int accountId)
+        private async Task<LedgerTransactionResultDto> GenerateNewTransactionAsync(InputLedgerTransactionDto transactionDto, int accountId)
         {
             if(transactionDto.Amount < 0.01m || transactionDto.Amount > 1000000)
             {
@@ -94,7 +94,7 @@ namespace Domain.LedgerTransactions
                 };
             }
 
-            var transactionResult = this._transactionRepo.AddLedgerTransaction(new LedgerTransactionDto()
+            var transactionResult = await this._transactionRepo.AddLedgerTransactionAsync(new LedgerTransactionDto()
             {
                 AccountId = accountId,
                 //rounding to nearest cent
@@ -107,22 +107,23 @@ namespace Domain.LedgerTransactions
             {
                 ResultType = LedgerTransactionResultTypeEnum.Success,
                 TransactionData = transactionResult,
-                AccountBalance = GetCurrentBalance(accountId)
+                AccountBalance = await GetCurrentBalanceAsync(accountId)
             };
         }
 
-        private bool UserHasEnoughForNewWithdrawal(decimal amount, int accountId) 
+        private async Task<bool> UserHasEnoughForNewWithdrawalAsync(decimal amount, int accountId) 
         {
-            return amount < _transactionRepo.GetCurrentBalance(accountId);
+            var currentBalance = await GetCurrentBalanceAsync(accountId);
+            return amount < currentBalance;
         }
 
         
-        private bool UserHasEnoughForUpdateWithdrawal(
+        private async Task<bool> UserHasEnoughForUpdateWithdrawalAsync(
             decimal newAmount, 
             LedgerTransactionDto originalTransaction,
             int accountId) 
         {
-            var currentBalance = _transactionRepo.GetCurrentBalance(accountId);
+            var currentBalance = await GetCurrentBalanceAsync(accountId);
 
             if(originalTransaction.TransactionType == LedgerTransactionTypeEnum.Deposit)
             {
