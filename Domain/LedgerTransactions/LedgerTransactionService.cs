@@ -45,6 +45,15 @@ namespace Domain.LedgerTransactions
                 };
             }
 
+            if(originalTransaction.AccountId != accountId)
+            {
+                return new LedgerTransactionResultDto()
+                {
+                    ResultType = LedgerTransactionResultTypeEnum.PermissionError,
+                    TransactionData = null
+                };
+            }
+
             if(transactionDto.TransactionType == LedgerTransactionTypeEnum.Withdrawal 
             && !await UserHasEnoughForUpdateWithdrawalAsync(transactionDto.Amount, originalTransaction, accountId))
             {
@@ -69,6 +78,36 @@ namespace Domain.LedgerTransactions
             {
                 ResultType = LedgerTransactionResultTypeEnum.Success,
                 TransactionData = transactionResult,
+                AccountBalance = await GetCurrentBalanceAsync(accountId)
+            };
+        }
+        public async Task<LedgerTransactionResultDto> DeleteTransactionAsync(int transactionId, int accountId)
+        {
+            var originalTransaction = await _transactionRepo.GetLedgerTransactionAsync(transactionId);
+
+            if(originalTransaction == null)
+            {
+                return new LedgerTransactionResultDto()
+                {
+                    ResultType = LedgerTransactionResultTypeEnum.InvalidTransactionId,
+                    TransactionData = null
+                };
+            }
+
+            if(originalTransaction.AccountId != accountId)
+            {
+                return new LedgerTransactionResultDto()
+                {
+                    ResultType = LedgerTransactionResultTypeEnum.PermissionError,
+                    TransactionData = null
+                };
+            }
+            await this._transactionRepo.DeleteLedgerTransactionAsync(transactionId, accountId);
+
+            return new LedgerTransactionResultDto()
+            {
+                ResultType = LedgerTransactionResultTypeEnum.Success,
+                TransactionData = null,
                 AccountBalance = await GetCurrentBalanceAsync(accountId)
             };
         }
@@ -116,7 +155,6 @@ namespace Domain.LedgerTransactions
             var currentBalance = await GetCurrentBalanceAsync(accountId);
             return amount < currentBalance;
         }
-
         
         private async Task<bool> UserHasEnoughForUpdateWithdrawalAsync(
             decimal newAmount, 

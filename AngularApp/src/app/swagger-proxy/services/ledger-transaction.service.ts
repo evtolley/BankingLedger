@@ -17,6 +17,7 @@ class LedgerTransactionService extends __BaseService {
   static readonly LedgerTransactionGetTransactionsPath = '/api/LedgerTransaction/gettransactions';
   static readonly LedgerTransactionCreatePath = '/api/LedgerTransaction/create';
   static readonly LedgerTransactionEditPath = '/api/LedgerTransaction/edit';
+  static readonly LedgerTransactionDeletePath = '/api/LedgerTransaction/delete';
   static readonly LedgerTransactionBalanceInquiryPath = '/api/LedgerTransaction/balanceinquiry';
 
   constructor(
@@ -112,7 +113,7 @@ class LedgerTransactionService extends __BaseService {
     let __body: any = null;
     __body = ledgerTransactionDto;
     let req = new HttpRequest<any>(
-      'POST',
+      'PUT',
       this.rootUrl + `/api/LedgerTransaction/edit`,
       __body,
       {
@@ -133,6 +134,40 @@ class LedgerTransactionService extends __BaseService {
    */
   LedgerTransactionEdit(ledgerTransactionDto: InputLedgerTransactionDto): __Observable<LedgerTransactionResultDto> {
     return this.LedgerTransactionEditResponse(ledgerTransactionDto).pipe(
+      __map(_r => _r.body as LedgerTransactionResultDto)
+    );
+  }
+
+  /**
+   * @param transactionId undefined
+   */
+  LedgerTransactionDeleteResponse(transactionId: number): __Observable<__StrictHttpResponse<LedgerTransactionResultDto>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    __body = transactionId;
+    let req = new HttpRequest<any>(
+      'DELETE',
+      this.rootUrl + `/api/LedgerTransaction/delete`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<LedgerTransactionResultDto>;
+      })
+    );
+  }
+  /**
+   * @param transactionId undefined
+   */
+  LedgerTransactionDelete(transactionId: number): __Observable<LedgerTransactionResultDto> {
+    return this.LedgerTransactionDeleteResponse(transactionId).pipe(
       __map(_r => _r.body as LedgerTransactionResultDto)
     );
   }

@@ -164,7 +164,7 @@
       }
     },
     "/api/LedgerTransaction/edit": {
-      "post": {
+      "put": {
         "tags": [
           "LedgerTransaction"
         ],
@@ -182,6 +182,46 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/InputLedgerTransactionDto"
+            },
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "x-nullable": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/LedgerTransactionResultDto"
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/LedgerTransaction/delete": {
+      "delete": {
+        "tags": [
+          "LedgerTransaction"
+        ],
+        "operationId": "LedgerTransaction_Delete",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             },
             "x-nullable": false
           }
@@ -388,19 +428,20 @@
         "Success",
         "InsufficientFunds",
         "AmountOutOfRange",
-        "InvalidTransactionId"
+        "InvalidTransactionId",
+        "PermissionError"
       ],
       "enum": [
         0,
         1,
         2,
-        3
+        3,
+        4
       ]
     },
     "InputLedgerTransactionDto": {
       "type": "object",
       "required": [
-        "transactionId",
         "amount",
         "transactionType"
       ],

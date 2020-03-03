@@ -43,8 +43,19 @@ export class TransactionComponent implements OnInit, OnDestroy {
     this.setViewMode(TransactionViewMode.View);
   }
 
-  delete(model: InputLedgerTransactionDto) {
-    console.log('delete clicked');
+  delete() {
+    this.ledgerService.deleteTransaction(this.transaction)
+    .pipe(
+      takeWhile(() => this.componentIsActive),
+      map(res => {
+        this.toastr.success('Transaction deleted');
+      }),
+      catchError(res => {
+        this.toastr.error(res.error.title);
+        return of();
+      })
+    )
+    .subscribe();
   }
 
   ngOnInit() {

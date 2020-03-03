@@ -11,6 +11,8 @@ namespace Domain.LedgerTransactions
         [Description("Only transactions between zero and one million dollars are supported")]
         AmountOutOfRange,
         [Description("Invalid TransactionId provided")]
-        InvalidTransactionId
+        InvalidTransactionId,
+        [Description("User does not have permission to modify this transaction")]
+        PermissionError
     }
 }

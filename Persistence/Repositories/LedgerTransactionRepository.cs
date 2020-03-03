@@ -83,6 +83,20 @@ namespace Persistence.Repositories
                 .ToListAsync();
         }
 
+        public async Task DeleteLedgerTransactionAsync(int transactionId, int accountId)
+        {
+           var account = await _db.Accounts.SingleOrDefaultAsync(x => x.AccountId == accountId);
+
+            var transaction = await _db.Transactions.FirstOrDefaultAsync(x => x.TransactionId == transactionId);
+            this._db.Transactions.Remove(transaction);
+
+            account.UpdateBalanceWhenTransactionDeleted(transaction);
+
+
+            await _db.SaveChangesAsync();
+        }
+
+
         public async Task<decimal> GetCurrentBalanceAsync(int accountId)
         {
             var account = await _db.Accounts.SingleOrDefaultAsync(x => x.AccountId == accountId);

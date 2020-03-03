@@ -65,13 +65,33 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("edit")]
         public async Task<ActionResult<LedgerTransactionResultDto>> Edit([FromBody]InputLedgerTransactionDto ledgerTransactionDto)
         { 
             try
             {
                 LedgerTransactionResultDto result = await _transactionService.EditTransactionAsync(ledgerTransactionDto, GetCurrentUserAccountId());
+
+                if (result.ResultType != LedgerTransactionResultTypeEnum.Success)
+                {
+                    return BadRequest(new ErrorResult(result.ResultType.GetDescription()));
+                }
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest(new ErrorResult("Oops, something went wrong! Please try again"));
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<ActionResult<LedgerTransactionResultDto>> Delete([FromBody]int transactionId)
+        { 
+            try
+            {
+                LedgerTransactionResultDto result = await _transactionService.DeleteTransactionAsync(transactionId, GetCurrentUserAccountId());
 
                 if (result.ResultType != LedgerTransactionResultTypeEnum.Success)
                 {

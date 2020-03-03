@@ -53,6 +53,15 @@ export class LedgerService {
         );
     }
 
+    deleteTransaction(transaction: InputLedgerTransactionDto): Observable<void> {
+        return this.transactionApiProxy.LedgerTransactionDelete(transaction.transactionId).pipe(
+            map(res => {
+                this.transactions$.next(this.transactions$.value.filter(item => item.transactionId !== transaction.transactionId));
+                this.accountBalance$.next(res.accountBalance)
+            })
+        );
+    }
+
     getBalance(): Observable<void> {
         return this.transactionApiProxy.LedgerTransactionBalanceInquiry().pipe(
             map(res => {
