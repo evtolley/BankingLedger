@@ -85,12 +85,12 @@ namespace Persistence.Repositories
 
         public async Task DeleteLedgerTransactionAsync(int transactionId, int accountId)
         {
-           var account = await _db.Accounts.SingleOrDefaultAsync(x => x.AccountId == accountId);
+            var account = await _db.Accounts.SingleOrDefaultAsync(x => x.AccountId == accountId);
 
             var transaction = await _db.Transactions.FirstOrDefaultAsync(x => x.TransactionId == transactionId);
             this._db.Transactions.Remove(transaction);
 
-            account.UpdateBalanceWhenTransactionDeleted(transaction);
+            account.RemoveTransactionAmountFromBalance(transaction.Amount, transaction.TransactionType);
 
 
             await _db.SaveChangesAsync();

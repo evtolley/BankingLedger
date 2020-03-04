@@ -45,10 +45,5 @@ namespace Persistence.Entities
                 this.Balance += amount;
             }
         }
-
-        public void UpdateBalanceWhenTransactionDeleted(LedgerTransaction transaction)
-        {
-            this.Balance -= transaction.Amount;
-        }
     }
 }
