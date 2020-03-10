@@ -17,11 +17,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(private readonly accountApiProxy: AccountService,
     private readonly authService: AuthService,
     private readonly toastr: ToastrService) { }
+
+    submitClicked = false;
     componentIsActive = true;
     model: LoginAttemptDto = { email: null, password: null };
 
 
     login() {
+      this.submitClicked = true;
       this.accountApiProxy.AccountLogin(this.model).pipe(
         takeWhile(() => this.componentIsActive),
         map(res => {

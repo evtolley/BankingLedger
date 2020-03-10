@@ -17,11 +17,13 @@ export class CreateAccountComponent implements OnInit, OnDestroy {
     private readonly authService: AuthService,
     private readonly toastr: ToastrService) { }
 
+    submitClicked = false;
     componentIsActive = true;
     model: CreateAccountDto = { email: null, password: null, confirmPassword: null};
 
 
     createAccount() {
+      this.submitClicked = true;
       this.accountApiProxy.AccountCreateAccount(this.model).pipe(
         takeWhile(() => this.componentIsActive),
         map(res => {
